@@ -1,4 +1,4 @@
-# Welcome to the Osiris Development Website!
+# Welcome to the Osiris Development Website
 
 ## Contents
 

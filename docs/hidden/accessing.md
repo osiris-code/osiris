@@ -23,7 +23,7 @@ login credentials you were issued.
 To update your existing copy with the latest changes do the following in
 the directory where you placed the code:
 
-```
+```text
 svn update
 ```
 
