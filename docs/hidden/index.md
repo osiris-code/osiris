@@ -3,11 +3,11 @@
 ## Contents
 
 * [OSIRIS Development](#osiris-development-branch)
-* [Compiling OSIRIS](Compiling_OSIRIS)
+* [Compiling OSIRIS](compiling.md)
 * [Reference Guide](reference/index.md)
-* [User Guide](User_Guide)
-* [Input file Changes](Input_File_Changes)
-* [Accessing the code](Accessing_the_code)
+* [User Guide](user/index.md)
+* [Input file Changes](Input_File_Changes.md)
+* [Accessing the code](accessing.md)
 
 ### OSIRIS Development Branch
 
@@ -21,5 +21,5 @@ the faster it will be tested and debugged, and the faster we will be
 able to incorporate these new features into the stable branch.
 
 This branch has differences in terms of input file from the stable
-branch, please check the [reference guide](Reference_Guide)
+branch, please check the [reference guide](reference/index.md)
 to see how you can update your input files.
