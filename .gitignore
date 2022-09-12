@@ -1,0 +1,4 @@
+# . (dot) files that various editors leak out
+.*
+!/.gitignore
+
