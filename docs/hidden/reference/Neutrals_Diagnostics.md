@@ -65,31 +65,3 @@ diag_current
   reports = "ion_charge" , 
 }
 ```
-
-## Old Version
-
-This section configures neutral diagnostics settings. It accepts the
-following data:
-
-- **ionlev_dump_fac**, integer, default = 1
-- **neutral_dump_fac**, integer, default = 0
-- **merge_data**, integer, default = 1
-
-**ionlev_dump_fac** specifies the dump factor for the ionization level.
-
-**neutral_dump_fac** specifies the dump factor for neutral density.
-
-**merge_data** specifies wheter the code should merge all diagnostics
-data on the first node of the simulation. If set to 0 spatially resolved
-diagnostics will save data regarding each local simulation volume on
-each node.
-
-Here's an example of a diag_neutral section:
-
-```text
-diag_neutral
-{
-  ionlev_dump_fac = 1,
-  neutral_dump_fac = 1,
-}
-```
