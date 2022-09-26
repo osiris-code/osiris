@@ -1,8 +1,8 @@
-# Accessing and Contributing to the code
+# Accessing and contributing to the code
 
 The Osiris open-source code is hosted on [Github](https://github.com/osiris-code/osiris). Here is a short primer on working with the OSIRIS git repository:
 
-### 1. Getting a fresh Osiris copy
+### 1. Cloning Osiris
 
 To clone the Osiris repository, run
 
