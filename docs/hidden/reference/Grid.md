@@ -3,16 +3,20 @@
 This section configures the numerical grid and coordinate settings and
 must be present in the input file. It accepts the following data:
 
-- **nx_p**(x_dim), integer, default = 1
+- **nx_p**(x_dim), integer, default = 0
 - **coordinates**, character(\*), default = "cartesian"
+- **io_nmerge**(x_dim), integer, default = 1
+- **io_merge_type**, character(\*), defualt = "point2point"
 - **load_balance**(x_dim), logical, default = .false.
 - **lb_type**, character(\*), default = "none"
 - **lb_gather**, character(\*), default = "sum"
-- **n_dynamic**, integer, default = 0
+- **n_dynamic**, integer, default = -1
 - **start_load_balance**, integer, default = -1
+- **balance_on_start**, logical, default = .false.
 - **max_imbalance**, float, default = 0.0
 - **cell_weight**, float, default = 0.0
 - **ndump_global_load**, integer, default = 0
+- **spatial_loaddensity**, character(\*), default = "NO FUNCTION DEFINED"
 
 <!-- -->
 
@@ -28,6 +32,15 @@ of the following:
 - "cartesian" - use cartesian coordinates.
 - "cylindrical" - use cylindrical coordinates with B1 defined on the
   symmetry axis.
+
+**ionmerge** Number of nodes to merge for data output. TODO explain more?
+
+**io_merge_type** Type of merging to use. TODO explain more?
+Currently availble options are:
+
+- "none" - TODO
+- "point2point" - TODO
+- "gather" - TODO
 
 **load_balance** - specifies in which directions the code will attempt
 to improve load balance by shifting node boundaries. When choosing any
@@ -56,6 +69,7 @@ gathered from all nodes. Possible values are:
 - "max" - Use the maximum value from nodes in transverse direction. In
   situations where the load varies significantly transversely this may
   yield a better partition.
+- "expression" - TODO
 
 **n_dynamic** When using the *dynamic* load balance type specifies at
 which frequency the code should try to adjust node boundaries in order
@@ -65,6 +79,8 @@ to improve load balance.
 parameter specifies the iteration at which dynamic load balance will
 start. The default is -1 meaning that dynamic load balancing will begin
 at simulation start.
+
+**balance_on_start** TODO
 
 **max_imbalance** specifies a threshold below which the code will not
 reshape node boundaries when doing dynamic load balancing. For example,
@@ -92,6 +108,8 @@ parallel partition. Files are stored in MS/LOAD/NODE.
 of particles per cell for all simulation cells. Output is saved in hdf5
 files using a grid with the same dimensions as simulation grid. Files
 are stored in MS/LOAD/CELL.
+
+**spatial_loaddensity** TODO
 
 Here is an example of a grid section for a 2D run, using a 4096 × 512
 cell grid and cartesian coordinates.
