@@ -10,7 +10,7 @@ data:
 - **if_remold**, bool, default = .false.
 - **ndump_time**, real, default = 0.0
 
-**ndump_fac** specifies the frequency at which to write restart
+**ndump_fac** - specifies the frequency at which to write restart
 information. This value is multiplied by the ndump value specified in
 the time_step section to determine the number of iterations between each
 restart dump. If set to 0 the writing of restart information is
@@ -20,11 +20,11 @@ disabled.
 This is the exact value of the iteration, and is meant to be used for
 debugging purposes.
 
-**if_restart** specifies whether the code should attempt to read
+**if_restart** - specifies whether the code should attempt to read
 information from restart files previously saved in order to restart the
 run exactly as it was at the time the restart information was saved.
 
-**if_remold** specifies whether the code should remove older restart
+**if_remold** - specifies whether the code should remove older restart
 files after it has successfuly saved restart information on all the
 nodes. This is extremely usefull in saving disk space.
 

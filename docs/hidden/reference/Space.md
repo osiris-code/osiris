@@ -7,19 +7,21 @@ accepts the following data:
 - **xmin**(x_dim), float, default = 0.0
 - **xmax**(x_dim), float, default = 0.0
 - **if_move**(x_dim) bool, default = .false.
+- **move_u**, float, default = -1.0
 
-**xmin**, **xmax** specify the lower and upper boundaries of the global
+**xmin**, **xmax** - specify the lower and upper boundaries of the global
 simulation space at the beggining of the simulation in normalized units.
 Note that for cylindrical coordinates, the lower boundary of the radial
 dimension will always be set to -*dr*/2, where *dr* is the radial cell
 size, overriding user input.
 
-**if_move** specifies a whether the code should use a moving window at
+**if_move** - specifies a whether the code should use a moving window at
 the speed of light in the specified directions. Setting this to .true.
 will override any boundary conditions for that direction you specify for
 Electro-Magnetic fields or particle species, except for the periodic
-boundaries set on the node_conf section. If "pgc" algorithm is set then
-only moving window is allowed.
+boundaries set on the node_conf section.
+
+**move_u** - TODO
 
 Here's an example of a space section for a 2D run that sets the global
 simulation boundaries to \[0.0,15.0\] in the x1 direction and \[0.0,

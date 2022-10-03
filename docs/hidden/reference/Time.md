@@ -16,6 +16,7 @@ of the simulation to 0.0 and 70.0 respectively.
 ```text
 time
 {
-  tmin = 0.0d0, tmax  = 70.d0,
+  tmin = 0.0d0,
+  tmax  = 70.d0,
 }
 ```
