@@ -57,9 +57,7 @@ must follow this section. It accepts the following options:
   effect, because the EM fields being smoothed in a given iteration will
   have already been smoothed previously. See also **smooth_niter** and
   **smooth_nmax**.
-- *"nci"* - Numerical Cherenkonv Instability filter. Based on
-  *B. B. Godfrey and J.-L. Vay, “Suppressing the numerical Cherenkov instability
-  in FDTD PIC codes,” Journal of Computational Physics, vol. 267, pp. 1–6, Jun. 2014*.
+- *"nci"* - Numerical Cherenkonv Instability filter \[1\].
   This is a special filter that is applied in the x1 direction only, and only to fields
   seen by the particles.
 
@@ -220,30 +218,17 @@ solved. Valid options are:
   it much faster than that option.
 - *"stencil"* - Use a linear combination of 3 methods for calculating the
   spatial derivatives, using different grid points, with relative
-  weights defined by the **k1** and **k2** parameters defined below. See
-  *A.D. Greenwood et al., Journal of Computational Physics 201 (2004)
-  665–684* for details.
+  weights defined by the **k1** and **k2** parameters defined below \[2\].
 - *"ndfx"* - Use a Numerical Dispersion Free (along X1 direction) solver.
   **IMPORTANT:** Time step condition is changed to dt \< dx1, not the
-  usual Courant condition used for other solvers. See *A. Pukhov, J.
-  Plasma Physics (1999), vol. 61, part 3, pp. 425–433* for details.
+  usual Courant condition used for other solvers \[3\].
 - *"kark"* - Use a Numerical Dispersion Free (along X1, X2, and X3
-  directions) solver. **IMPORTANT:** Solver assumes **cubic (square)
+  directions) solver \[4\]. **IMPORTANT:** Solver assumes **cubic (square)
   cells** and time step condition is changed to dt \< dx1, not the usual
-  Courant condition used for other solvers. See *M. Karkkainen et al.,
-  Low-Dispersion Wake Field Calculation Tools, Proceedings of ICAP 2006,
-  Chamonix, France, MOM2IS03* for details.
+  Courant condition used for other solvers.
 - *"lehe"* - Use the solver developed by R. Lehe. **IMPORTANT:** time step
-  condition is changed to dt \< dx1. See *R. Lehe, et.al., "Numerical
-  growth of emittance in simulations of laser-wakefield acceleration",
-  Physical Review Special Topics-Accelerators and Beams, vol. 16, no.
-  2, p. 021301, Feb. 2013*, for details.
-- *"ck"* - Use the Cole-Karkkainen Solver.
-  See *M. Karkkainen, et.al., "Low-Dispersion Wake Field Calculation Tools", Proceedings of
-  ICAP 2006, Chamonix, France, vol. 2, pp. 35-40, Jan. 2007.* and 
-  *J. B. Cole, "A high-accuracy Yee algorithm based on nonstandard finite differences:
-  new developments and verifications", IEEE Trans. Antennas Prop., vol. 50, no. 9,
-  Sept 2002, pp. 1185–1191* for details.
+  condition is changed to dt \< dx1 \[5\].
+- *"ck"* - Use the Cole-Karkkainen Solver \[4\] \[6\].
 - *"fei"* - TODO
 
 Here's an example of a el_mag_fld section that specifies an external
@@ -257,3 +242,17 @@ el_mag_fld
   b0(3) = 1.0d0,
 }
 ```
+
+## References
+
+\[1\] [B. B. Godfrey and J.-L. Vay, “Suppressing the numerical Cherenkov instability in FDTD PIC codes,” Journal of Computational Physics, vol. 267, pp. 1–6, Jun. 2014.](https://arxiv.org/abs/1401.0838)
+
+\[2\] [A.D. Greenwood et al., "On the elimination of numerical Cerenkov radiation in PIC simulations", Journal of Computational Physics 201 (2004) 665–684](https://www.sciencedirect.com/science/article/pii/S0021999104002608)
+
+\[3\] [A. Pukhov, "Three-dimensional electromagnetic relativistic particle-in-cell code VLPL (Virtual Laser Plasma Lab)", J. Plasma Physics (1999), vol. 61, part 3, pp. 425–433](https://www.cambridge.org/core/journals/journal-of-plasma-physics/article/threedimensional-electromagnetic-relativistic-particleincell-code-vlpl-virtual-laser-plasma-lab/7FBA476D599E2F19DFEA3F0F2F84FFAB)
+
+\[4\] [M. Karkkainen et al., "Low-Dispersion Wake Field Calculation Tools", Proceedings of ICAP 2006, Chamonix, France, MOM2IS03](https://www.researchgate.net/publication/228342906_Low-dispersion_wake_field_calculation_tools)
+
+\[5\] [R. Lehe, et.al., "Numerical growth of emittance in simulations of laser-wakefield acceleration", Physical Review Special Topics-Accelerators and Beams, vol. 16, no. 2, p. 021301, Feb. 2013](https://www.researchgate.net/publication/258097872_Numerical_growth_of_emittance_in_simulations_of_laser-wakefield_acceleration)
+
+\[6\] [J. B. Cole, "A high-accuracy Yee algorithm based on nonstandard finite differences: new developments and verifications", IEEE Trans. Antennas Prop., vol. 50, no. 9, Sept 2002, pp. 1185–1191](https://ieeexplore.ieee.org/document/1048990)

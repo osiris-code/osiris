@@ -114,6 +114,9 @@ simulation 
 ## References
 
 \[1\] Kirkpatrick, S., and E. Stoll, A Very Fast Shift-Register Sequence Random Number Generator, Journal of Computational Physics (1981), v. 40. p. 517
+
 \[2\] Maier, W.L., 1991; A Fast Pseudo Random Number Generator, Dr. Dobb's Journal, May, pp. 152 - 157
+
 \[3\] Marsaglia, George (2003) "Random Number Generators," Journal of Modern Applied Statistical Methods: Vol. 2: Iss. 1, Article 2.
+
 \[4\] Saul Teukolsky, William H. Press, and William T. Vetterling, "Numerical Recipes", 2007
