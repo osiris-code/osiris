@@ -66,7 +66,7 @@ used to automatically calculate the 'laserkdx' smooth coefficients.
 information dumps.
 
 **wall_clock_limit** specifies a time limit to shut down the simulation,
-in a format "h:m:s". When this wall clock time is reached the simulation
+in a format "h\:m\:s". When this wall clock time is reached the simulation
 will shut down. See also 'wall_clock_check'.
 
 **wall_clock_check** specifies the frequency at which to check if wall
