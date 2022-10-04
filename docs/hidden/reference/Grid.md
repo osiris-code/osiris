@@ -29,8 +29,8 @@ the simulation.
 **coordinates** specifies the coordinate system to use and must be one
 of the following:
 
-- "cartesian" - use cartesian coordinates.
-- "cylindrical" - use cylindrical coordinates with B1 defined on the
+- *"cartesian"* - use cartesian coordinates.
+- *"cylindrical"* - use cylindrical coordinates with B1 defined on the
   symmetry axis.
 
 **ionmerge** Number of nodes to merge for data output. TODO explain more?
@@ -38,9 +38,9 @@ of the following:
 **io_merge_type** Type of merging to use. TODO explain more?
 Currently availble options are:
 
-- "none" - TODO
-- "point2point" - TODO
-- "gather" - TODO
+- *"none"* - TODO
+- *"point2point"* - TODO
+- *"gather"* - TODO
 
 **load_balance** - specifies in which directions the code will attempt
 to improve load balance by shifting node boundaries. When choosing any
@@ -51,11 +51,11 @@ load balance type (other than none) at least 1 direction must be set to
 distributing the computational load among the multiple nodes specified.
 This parameter may take one of the following values:
 
-- "none" - Divide the grid cells as evenly as possible among all nodes.
-- "static" - Divide the computational load as evenly as possible along
+- *"none"* - Divide the grid cells as evenly as possible among all nodes.
+- *"static"* - Divide the computational load as evenly as possible along
   the nodes in the directions specified by *load_balance* in the
   beginning of the simulation.
-- "dynamic" - Divide the computational load as evenly as possible along
+- *"dynamic"* - Divide the computational load as evenly as possible along
   the nodes in the directions specified by *load_balance* in the
   beginning of the simulation, and then dynamically adjust the load
   distribution during the simulation at a frequency defined by the
@@ -64,12 +64,12 @@ This parameter may take one of the following values:
 **lb_gather** specifies how the load along the load balance direction is
 gathered from all nodes. Possible values are:
 
-- "sum" - Sum data from nodes in transverse directions. This is the
+- *"sum"* - Sum data from nodes in transverse directions. This is the
   default.
-- "max" - Use the maximum value from nodes in transverse direction. In
+- *"max"* - Use the maximum value from nodes in transverse direction. In
   situations where the load varies significantly transversely this may
   yield a better partition.
-- "expression" - TODO
+- *"expression"* - TODO
 
 **n_dynamic** When using the *dynamic* load balance type specifies at
 which frequency the code should try to adjust node boundaries in order

@@ -32,13 +32,13 @@ species.
 **topology** specifies how osiris should map simulation nodes to
 parallel nodes. Currently available options are:
 
-- "mpi" - Use MPI functions (namely MPI_CART_CREATE) to generate the
+- *"mpi"* - Use MPI functions (namely MPI_CART_CREATE) to generate the
   topology. MPI can use knowledge about network details to choose the
   best topology. This is the default.
-- "old" - Use the old OSIRIS algorithm to generate the topology. This
+- *"old"* - Use the old OSIRIS algorithm to generate the topology. This
   should only be used for testing purposes and comparing to old versions
   of the code.
-- "bgq" - (available on BlueGene/Q systems only). This generates a
+- *"bgq"* - (available on BlueGene/Q systems only). This generates a
   topology based on the 5D torus topology of the BlueGene/Q system. This
   should provide the best performance on these systems.
 

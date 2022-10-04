@@ -22,8 +22,8 @@ accepts the following data:
 **algorithm** specifies the algorithm to be used in the simulation. Currently available
 options are:
 
-- "standard"
-- More coming soon
+- *"standard"*
+- More coming soon...
 
 **random_seed** specifies the seed used by the random number generator.
 If not set it defaults to 0. If set the random number generator seed
@@ -33,30 +33,19 @@ just random_seed in serial runs).
 **random_algorithm** algorithm to use for global random number generation.
 Currently available options are:
 
-- "mt" - Fortran implementation of the Mersenne Twister random number generator
-  (period 2\*\*19937-1). For details on the random number generator see:
-  http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html and references therein.
-  Ported to fortran from the distribution mt19937ar.c
+- *"mt"* - Fortran implementation of the [Mersenne Twister random number generator](http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html).
 
-- "r250" - F03 Implementation of the R250 Pseudo-random number generator
-  algorithm from:
-  Kirkpatrick, S., and E. Stoll, A Very Fast Shift-Register Sequence Random Number Generator, Journal of Computational Physics (1981), v. 40. p. 517
-  see also:
-  Maier, W.L., 1991; A Fast Pseudo Random Number Generator, Dr. Dobb's Journal, May, pp. 152 - 157
+- *"r250"* - F03 Implementation of the R250 Pseudo-random number generator \[1\], \[2\]
 
-- "cmwc" - Complimentary Multiply With Carry Random Number Generator.
-  See:
-  Marsaglia, George (2003) "Random Number Generators," Journal of Modern Applied Statistical Methods: Vol. 2: Iss. 1, Article 2.
+- *"cmwc"* - Complimentary Multiply With Carry Random Number Generator \[3\]
 
-- "mwc" - Marsaglia MWC (multiply-with-carry) Pseudo Random Number Generator
+- *"mwc"* - Marsaglia MWC (multiply-with-carry) Pseudo Random Number Generator
 
-- "kiss" - KISS Pseudo Random Number Generator
-  See:
-  Marsaglia, George (2003) "Random Number Generators," Journal of Modern Applied Statistical Methods: Vol. 2: Iss. 1, Article 2.
+- *"kiss"* - KISS Pseudo Random Number Generator \[3\]
 
-- "hash" - Implements the Hashing RNG from Numerical Recipes, Saul Teukolsky, William H. Press, and William T. Vetterling
+- *"hash"* - Implements the Hashing RNG from \[4\]
 
-- "default" - Uses Mersenne Twister, above.
+- *"default"* - Uses Mersenne Twister, above.
 
 **omega_p0** specifies the reference simulation plasma frequency for the
 simulation in units of \[rad/s\]. The user must set this value when
@@ -92,15 +81,15 @@ checkpointing information when stopping due to wall clock limit.
 
 **file_format** specifies the file format to use when dumping data to disk.
 Currently available options are:
-- "hdf5" - TODO a bit more explanation?
-- "zdf" - TODO a bit more explanation?
+- *"hdf5"* - TODO a bit more explanation?
+- *"zdf"* - TODO a bit more explanation?
 
 **parallel_io** TODO explain more
 Currently available options are:
-- "mpi"
-- "indep"
-- "mpiio-indep"
-- "mpiio-coll"
+- *"mpi"*
+- *"indep"*
+- *"mpiio-indep"*
+- *"mpiio-coll"*
 
 **enforce_rng_constancy** If false, an identical iput deck will give different result
 due to random number generation (RNG) depending on a given run's spatial decomposition
@@ -121,3 +110,10 @@ simulation 
   n0 = 2.7e17,  ! [cm^-3]
 }
 ```
+
+## References
+
+\[1\] Kirkpatrick, S., and E. Stoll, A Very Fast Shift-Register Sequence Random Number Generator, Journal of Computational Physics (1981), v. 40. p. 517
+\[2\] Maier, W.L., 1991; A Fast Pseudo Random Number Generator, Dr. Dobb's Journal, May, pp. 152 - 157
+\[3\] Marsaglia, George (2003) "Random Number Generators," Journal of Modern Applied Statistical Methods: Vol. 2: Iss. 1, Article 2.
+\[4\] Saul Teukolsky, William H. Press, and William T. Vetterling, "Numerical Recipes", 2007

@@ -13,13 +13,13 @@ electro-magnetic fields. type(k,i), with k = {1,2} and i = {1, ...,
 x_dim} specifies the boundary condition in the i direction for the lower
 (k=1) or upper (k=2) boundary. The following are valid values for type:
 
-- "axial" - Axial boundary condition for 2D cylindrical coordinates
-- "lindmann" - Lindmann open space boundary conditions
-- "vpml" or "open" - Perfectly matched layers as absorbing boundary
+- *"axial"* - Axial boundary condition for 2D cylindrical coordinates
+- *"lindman"* - Lindmann open space boundary conditions
+- *"vpml"* or "open" - Perfectly matched layers as absorbing boundary
   conditions (Vay's hybrid algorithm
-- "conducting" or "pec" - Conducting (perfect electric conductor)
+- *"conducting"/"pec"* - Conducting (perfect electric conductor)
   boundary conditions
-- "reflecting" or "pmc" - Reflecting (perfect magnetic conductor)
+- *"reflecting"/"pmc"* - Reflecting (perfect magnetic conductor)
   boundary conditions
 
 If periodic boundaries or a moving window has been specified for a given
