@@ -21,7 +21,8 @@ will override any boundary conditions for that direction you specify for
 Electro-Magnetic fields or particle species, except for the periodic
 boundaries set on the node_conf section.
 
-**move_u** - TODO
+**move_u** - specifies the normalized momentum of the moving window (i.e. beta * gamma).
+Note: in principle, negative momenta could be allowed, but are not currently implemented.
 
 Here's an example of a space section for a 2D run that sets the global
 simulation boundaries to \[0.0,15.0\] in the x1 direction and \[0.0,

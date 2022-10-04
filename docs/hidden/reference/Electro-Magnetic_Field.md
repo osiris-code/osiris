@@ -41,11 +41,7 @@ accepts the following data:
 
 <!-- -->
 
-- **n_subcycle**, integer, default = 1
 - **solver**, character(\*), default = "yee"
-- **k1**, **k2**, real, default = 0.0
-- **marder_d**, real, default = 0.0
-- **marder_n**, integer, default = 0
 
 **smooth_type** controls the type of smoothing to be applied to the EM
 fields. The actual smoothing parameters are set in a smooth section that
@@ -61,6 +57,11 @@ must follow this section. It accepts the following options:
   effect, because the EM fields being smoothed in a given iteration will
   have already been smoothed previously. See also **smooth_niter** and
   **smooth_nmax**.
+- "nci" - Numerical Cherenkonv Instability filter. Based on
+  *B. B. Godfrey and J.-L. Vay, “Suppressing the numerical Cherenkov instability
+  in FDTD PIC codes,” Journal of Computational Physics, vol. 267, pp. 1–6, Jun. 2014*.
+  This is a special filter that is applied in the x1 direction only, and only to fields
+  seen by the particles.
 
 **smooth_niter** specifies the number of iterations between smooth
 passes for the "local" smooth. The default is 1, meaning the local
@@ -207,13 +208,6 @@ position below which the field contributing for an external electric
 field of type "dipole" is set to the value at the dipole position. See
 the parameters *dipole_e_m* and *dipole_e_x0* for further details.
 
-**n_subcycle** specifies the number of time steps over which the code
-will average the electro-magnetic fields for the slower species. Values
-of 1 or less for this parameter turn sub cycling off. Also check the sub
-cycle parameter in the species section. Note that this is still at an
-experimental stage, and the physics hasn't been properly tested. The
-code should, however, run ok.
-
 **solver** allows the user to choose from variations of the field
 solver. This has an impact on the actual dispersion relation that is
 solved. Valid options are:
@@ -244,23 +238,13 @@ solved. Valid options are:
   growth of emittance in simulations of laser-wakefield acceleration",
   Physical Review Special Topics-Accelerators and Beams, vol. 16, no.
   2, p. 021301, Feb. 2013*, for details.
-
-**k1**, **k2**, specify the parameters for the "stencil" field solver.
-Interesting values for these parameters are k1 \< 0, and k2 = 0 or k2 =
-2 k1. Setting k1 = k2 = 0 recovers the Yee solver, and setting k1 =
--1/8, k2 = 0, implements a 4th order accurate spatial derivative
-approximation.
-
-**marder_d** specifies the d parameter of the improved Marder/Langdon
-charge conservation correction. See *LANGDON, A. Comp. Phys. Comm.
-70(3), 447450 (1992), section 3, eq. 8* for details. This parameter
-defaults to 0.0, meaning that no charge conservation correction is to be
-applied. ***Note**: OSIRIS uses a charge conserving algorithm so when
-using the Yee solver charge is already conserved to numerical
-precision*.
-
-**marder_n** specifies the number of Marder/Langdon passes to apply at
-each time step. See also **marder_d**.
+- "ck" - Use the Cole-Karkkainen Solver.
+  See *M. Karkkainen, et.al., "Low-Dispersion Wake Field Calculation Tools", Proceedings of
+  ICAP 2006, Chamonix, France, vol. 2, pp. 35-40, Jan. 2007.* and 
+  *J. B. Cole, "A high-accuracy Yee algorithm based on nonstandard finite differences:
+  new developments and verifications", IEEE Trans. Antennas Prop., vol. 50, no. 9,
+  Sept 2002, pp. 1185–1191* for details.
+- "fei" - TODO
 
 Here's an example of a el_mag_fld section that specifies an external
 magnetic field of 1.0 normalized units along x3.
