@@ -50,22 +50,21 @@ This profile type is selected by setting `init_type` to *"standard"* or *"profil
 - **math_func_expr**, character(\*), default = "NO_FUNCTION_SUPPLIED!"
 
 **density** - specifies a global multiplication factor for the density
-profile. Regardless of which profile type you choose the final density
-value will be `density * profile` value (see below). This parameter can used to set
+profile. Regardless of which profile type you choose, the final density
+value will be `density * profile` value (see below). This parameter can be used to set
 the density for the sphere and uniform density profile types as these
 default to 1.0 in the appropriate regions.
 
 **den_min** - specifies the minimum density for injecting particles.
-Particles are only injected when the specified density (see profile
-section) is above this threshold. This parameter is ignored if used in a
-species connected to a neutral or neutral_mov_ions particle source.
+Particles are only injected when the specified density is above this threshold. This parameter is ignored if used in a
+species connected to a `neutral` or `neutral_mov_ions` particle source.
 
 **profile_type** - specifies the profile type to use.
 There are two groups of density profiles that can be selected: (1) functions
 that are separable into functions that depend only on one of the
 coordinates, i.e., $f(x_1,x_2) = f_1(x_1) \times f_2(x_2)$ and (2)
 arbitrary functions. If you choose the use the
-first group, you can use piecewise-linear and gaussian functions for any
+first group, you can use piecewise-linear and Gaussian functions for any
 of the $f_i(x_i)$. If you choose the second group, you can use one of the
 following function types: uniform, channel, sphere or a specified
 mathematical function. You cannot mix functions from the two groups.
@@ -75,11 +74,11 @@ one of the following values:
 
 - *"piecewise-linear"* - uses a piecewise-linear function defined by the
   `num_x`, `x` and `fx` parameters. See these parameters for details.
-- *"gaussian"* - uses a gaussian function defined by the `x_cent`, `f_cent`,
+- *"gaussian"* - uses a Gaussian function defined by the `x_cent`, `f_cent`,
   `x_sigm`, and `x_range` parameters. See these parameters for details.
 
 Here's an example for a 3D run using piecewise-linear functions in the
-x1 and x2 direction and a gaussian function in the x3 direction:
+x1 and x2 direction and a Gaussian function in the x3 direction:
 
 ```text
   profile_type(1:3) = "piecewise-linear", "piecewise-linear", "gaussian",
@@ -125,13 +124,13 @@ an example for a 6-point piecewise-linear function in the x2 direction:
 ```
 
 **gauss_center**, **gauss_sigma**, **gauss_range**, **gauss_n_sigma** - specify the
-parameters for the gaussian function we intend to use. The `gauss_center(i)`,
+parameters for the Gaussian function we intend to use. The `gauss_center(i)`,
 `gauss_sigma(i)` and `gauss_range(\*,i)` parameters represent the center, sigma and
-range for the gaussian on the i-th direction, respectively. If `profile_type(i)` is not
-equal to "gaussian" the values specified are silently ignored. The
+range for the Gaussian on the i-th direction, respectively. If `profile_type(i)` is not
+equal to *"gaussian"* the values specified are silently ignored. The
 `gauss_range(k,i)` represent the lower (`k=1`) and upper (`k=2`) limits for
-which the gaussian function is evaluated. Outside these limits a value
-of 0 is returned. The `gauss_n_sigma(i)` parameter, if specified, takes precedence over the `gauss_range(i)` parameter and sets the range to include `gauss_n_sigma(i)` number of sigmas on either side of the center. Here's an example for a gaussian function in the x1
+which the Gaussian function is evaluated. Outside these limits a value
+of 0 is returned. The `gauss_n_sigma(i)` parameter, if specified, takes precedence over the `gauss_range(i)` parameter and sets the range to include `gauss_n_sigma(i)` number of sigmas on either side of the center. Here's an example for a Gaussian function in the x1
 direction with sigma = 1.4142, centered about x1 = 10.0, with a peak
 value of 2.0, defined for $5.0 < x_1 < 15.0$:
 
@@ -145,7 +144,7 @@ value of 2.0, defined for $5.0 < x_1 < 15.0$:
 **channel_dir**, **channel_r0**, **channel_depth**,
 **channel_size**, **channel_center**, **channel_wall**, **channel_pos**, **channel_bottom** -
 specify the parameters for a parabolic channel. The `channel_dir` parameter specifies
-channel symmetry axis. If `profile_type(1)` is not set to "channel", the
+channel symmetry axis. If `profile_type(1)` is not set to *"channel"*, the
 values specified are silently ignored. The density of the channel will
 be `channel_bottom + channel_depth * (||x_perp -
 channel_center||/channel_r0)^2` for `||x_perp - channel_center|| <
@@ -231,12 +230,12 @@ section) is above this threshold. This parameter is ignored if used in a
 species connected to a neutral or neutral_mov_ions particle source.
 
 **gauss_center**, **gauss_sigma**, **gauss_range**, **gauss_n_sigma** - specify the
-parameters for the gaussian function we intend to use. The `gauss_center(i)`,
+parameters for the Gaussian function we intend to use. The `gauss_center(i)`,
 `gauss_sigma(i)` and `gauss_range(\*,i)` parameters represent the center, sigma and
-range for the gaussian on the i-th direction, respectively. If `profile_type(i)` is not
-equal to "gaussian" the values specified are silently ignored. The
+range for the Gaussian on the i-th direction, respectively. If `profile_type(i)` is not
+equal to *"gaussian"* the values specified are silently ignored. The
 `gauss_range(k,i)` represent the lower (`k=1`) and upper (`k=2`) limits for
-which the gaussian function is evaluated. Outside these limits a value
+which the Gaussian function is evaluated. Outside these limits a value
 of 0 is returned. The `gauss_n_sigma(i)` parameter, if specified, takes precedence over the `gauss_range(i)` parameter and sets the range to include `gauss_n_sigma(i)` number of sigmas on either side of the center.
 
 **focal_dist** - specify the focal plane distance after acceleration for each dimension.

@@ -4,10 +4,10 @@ This section configures particle species boundary confition setting and
 must be present in the input file. One of these sections must exist for
 every species we intend to use. It accepts the following data:
 
-- **type**(2, x_dim), character(\*), default = "---"
+- **type**(2,x_dim), character(\*), default = "---"
 - **uth_bnd**(3,2,x_dim), float, default = 0.0
 - **ufl_bnd**(3,2,x_dim), float, default = 0.0
-- **thermal_type**(2, x_dim), string, default = "thermal"
+- **thermal_type**(2,x_dim), character(\*), default = "thermal"
 
 **type** - specifies the boundary conditions to use for the particle
 species. The `type(k,i)`, with `k = {1,2}` and `i = {1, ..., x_dim}` specifies the

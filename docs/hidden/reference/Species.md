@@ -77,8 +77,8 @@ Currently available options are:
 - *"fullrot"* - This algorithm calculates the magnetic field rotation of the Boris algorithm exactly (rather than second-order accurate).  However, the electric field half-pushes remain only first-order accurate in the Boris algorithm \[1,3\].
 - *"euler"* - This algorithm implements a Boris-type pusher where the magnetic rotation is implemented using the [Euler-Rodrigues formula](https://en.wikipedia.org/wiki/Euler–Rodrigues_formula), which gives exact results for arbitrarily high magnetic field values.
 - *"cary"* - Push the particles using the algorithm proposed by Higuera and Cary \[4\].  This method is volume-preserving (like Boris) and gives the correct $E \times B$ force (like Vay).
-- *"exact"* or "analytic" - Performs an exact integration of the particle trajectories assuming constant fields for a given time step \[5\].  The `rad_react` parameter can be set to `.true.` to include radiation reaction with this pusher, and the `iter_tol` parameter is used to specify the root-finding convergence threshold.
-- *"exact-rr*" or "analytic-rr" - Performs an exact integration of the particle trajectories, including the semi-classical form of radiation reaction in the Landau-Lifshitz equation, assuming constant fields for a given time step \[5\]. The `iter_tol` parameter is used to specify the root-finding convergence threshold.
+- *"exact"* or *"analytic"* - Performs an exact integration of the particle momenta assuming constant fields for a given time step \[5\].  The `rad_react` parameter can be set to `.true.` to include a perturbation from radiation reaction with this pusher, and the `iter_tol` parameter is used to specify the root-finding convergence threshold.
+- *"exact-rr"* or *"analytic-rr"* - Performs an exact integration of the particle momenta based on the semi-classical form of radiation reaction in the Landau-Lifshitz equation, assuming constant fields for a given time step \[5\]. The `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck, and the `q_real` parameter should be set within this section. For the strong-field regime, the *“exact-rr”* pusher is recommended due its improved accuracy compared to the *“exact”* pusher with `rad_react` set to `.true.`.
 - *"radcool"* - Radiation cooling algorithm. If specified, the `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck.
 
 **rqm** - specifies the 'reciprocal charge over mass ratio' (i.e., m/q) in
@@ -142,7 +142,7 @@ species to make binary Coulomb collisions with itself. If specified, the `q_real
 
 **iter_tol** - specifies the convergence threshold of root-finding routines in the exact pusher.
 
-**rad_react** - setting this parameter to `.true.` will include radiation reaction if the pusher is specified as `"exact"`.  If specified, the `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck and the `q_real` parameter should be set within this section.
+**rad_react** - setting this parameter to `.true.` will include radiation reaction by correcting the particle momenta each time step. This parameter should only be set when *“exact”* particle pusher is used. If `rad_react` is specified, the `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck, and the `q_real` parameter should be set within this section.
 
 Here's an example of a species section for a 2D run. It will be named
 "electrons", it uses electrons or a particle with the same q/m, 8
