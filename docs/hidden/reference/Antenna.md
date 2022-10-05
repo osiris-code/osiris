@@ -21,6 +21,14 @@ accepts the following data:
 - **y0**, float, default = 0.0
 - **rad_x**, float, defaullt = 0.0
 - **rad_y**, float, default = 0.0
+- **t_offset**, float, default = 0.0
+- **spin**, integer, default = 0
+- **direction**, integer, default = 1
+- **power**, integer, default = 8
+- **eps**, float, default = 0.0001
+- **chirp**, float, default = 0.0
+- **jitterw**, float, default = 0.0
+- **jitteromg**, float, default = 1.0
 
 Presently antennas can only be used along the x1 direction. Also note
 that using antennas imposes limitation on the boundary conditions you
@@ -75,6 +83,15 @@ normalized units. y0 only affects 3D runs.
 **rad_x**, **rad_y** specify the full width of the launched EM wave
 (which always has a gaussian transverse profile) in normalized units.
 rad_y only affects 3D runs.
+
+**t_offset** TODO
+**spin** TODO
+**direction** TODO
+**power** TODO
+**eps** TODO
+**chirp** TODO
+**jitterw** TODO
+**jitteromg** TODO
 
 Here's an example of an antenna section for a 2D run.
 
