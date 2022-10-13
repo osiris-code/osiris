@@ -79,7 +79,7 @@ which frequency the code should try to adjust node boundaries in order
 to improve load balance.
 
 **start_load_balance** When using the *dynamic* load balance, this
-parameter specifies the iteration, n (n>=0), at which dynamic load balance can
+parameter specifies the iteration, n (where n>=0), at which dynamic load balance can
 start. Note, load balancing only happens at exactly this iteration when *balance_on_start=.true.,*,
 otherwise it only happens when `modulo(n, n_dynamic)==0`.
 
