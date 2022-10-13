@@ -79,11 +79,12 @@ which frequency the code should try to adjust node boundaries in order
 to improve load balance.
 
 **start_load_balance** When using the *dynamic* load balance, this
-parameter specifies the iteration at which dynamic load balance will
-start. The default is -1 meaning that dynamic load balancing will begin
-at simulation start.
+parameter specifies the iteration, n (n>=0), at which dynamic load balance can
+start. Note, load balancing only happens at exactly this iteration when *balance_on_start=.true.,*,
+otherwise it only happens when `modulo(n, n_dynamic)==0`.
 
-**balance_on_start** TODO
+**balance_on_start** specifies whether to do a load balance when the iteration, n, is
+equal to the value specified by *start_load_balance*.
 
 **max_imbalance** specifies a threshold below which the code will not
 reshape node boundaries when doing dynamic load balancing. For example,
