@@ -79,17 +79,17 @@ checkpointing information when stopping due to wall clock limit.
 
 **prof_end** specifies the time step at which profiling dumps should end.
 
-**file_format** specifies the file format to use when dumping data to disk.
+**file_format** specifies the file format to be used for simulation output.
 Currently available options are:
-- *"hdf5"* - TODO a bit more explanation?
-- *"zdf"* - TODO a bit more explanation?
+- *"hdf5"* - Output files using the [HDF5 format](https://www.hdfgroup.org/solutions/hdf5/). Using this option requires compiling OSIRIS with HDF5 support. When supported, this is the default.
+- *"zdf"* - Output files using the [ZDF format](https://github.com/zpic-plasma/zpic/tree/main/zdf). This option generally leads to smaller output files and better performance but it is not wildly supported by visualization and data analysis tools.
 
-**parallel_io** TODO explain more
+**parallel_io** Specifies the type of parallel I/O used for simulation output.
 Currently available options are:
-- *"mpi"*
-- *"indep"*
-- *"mpiio-indep"*
-- *"mpiio-coll"*
+- *"mpi"* (default) - Data is saved by root node and transferred from other nodes using MPI. Communication and file I/O are overlapped for better performance. Only root node needs access to the file system.
+- *"indep"* (not supported by HDF5 files) - Data is saved by all nodes independently. Requires direct access to file system by all nodes.
+- *"mpiio-indep"* Data is saved using MPI parallel I/O (MPI-IO) using independent writes. If using HDF5 this requires that the HDF5 library was compiled with parallel I/O support.
+- *"mpiio-coll"* Data is saved using MPI parallel I/O (MPI-IO) using collective writes. If using HDF5 this requires that the HDF5 library was compiled with parallel I/O support.
 
 **enforce_rng_constancy** If false, an identical iput deck will give different result
 due to random number generation (RNG) depending on a given run's spatial decomposition

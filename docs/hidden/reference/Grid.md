@@ -33,14 +33,15 @@ of the following:
 - *"cylindrical"* - use cylindrical coordinates with B1 defined on the
   symmetry axis.
 
-**ionmerge** Number of nodes to merge for data output. TODO explain more?
+**ionmerge** Number of nodes to merge for data output in each direction.
+Must divide number of nodes in parallel partition exactly. Defaults to 1 (no merging).
 
-**io_merge_type** Type of merging to use. TODO explain more?
-Currently availble options are:
+**io_merge_type** Options controlling two-level I/O (merging data on groups of nodes before doing parallel I/O).
+Currently availble options are: 
 
-- *"none"* - TODO
-- *"point2point"* - TODO
-- *"gather"* - TODO
+- *"none"* - No merging.
+- *"point2point"* - Use MPI point to point messages
+- *"gather"* - Use MPI gather operations
 
 **load_balance** - specifies in which directions the code will attempt
 to improve load balance by shifting node boundaries. When choosing any
@@ -69,7 +70,9 @@ gathered from all nodes. Possible values are:
 - *"max"* - Use the maximum value from nodes in transverse direction. In
   situations where the load varies significantly transversely this may
   yield a better partition.
-- *"expression"* - TODO
+- *"expression"* - Balance load defined by an expression specified using the
+  *spatial_loaddensity* parameter below. This happens only once at the beginning of the
+  simulation.
 
 **n_dynamic** When using the *dynamic* load balance type specifies at
 which frequency the code should try to adjust node boundaries in order
@@ -109,7 +112,9 @@ of particles per cell for all simulation cells. Output is saved in hdf5
 files using a grid with the same dimensions as simulation grid. Files
 are stored in MS/LOAD/CELL.
 
-**spatial_loaddensity** TODO
+**spatial_loaddensity** If using `lb_gather = "expression",` above, then this parameter
+specifies an analytical expression for the load density, using the analytical function
+parser. The function is evaluated at the center of the cell. 
 
 Here is an example of a grid section for a 2D run, using a 4096 × 512
 cell grid and cartesian coordinates.
