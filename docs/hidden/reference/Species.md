@@ -5,7 +5,7 @@ the input file. One of these sections must exist for every species we
 intend to use, either as a particle source for particles injected at the
 begining of the simulations obeying some spatial profile and temperature
 distribution, or as buffer to hold particles injected during the run
-from some external source (e.g., cathode, neutral and neutral_mov_ions).
+from some external source (e.g., [cathode](Cathode.md), [neutral](Neutrals.md) and [neutral_mov_ions](Neutrals_with_Moving_Ions.md)).
 It accepts the following data:
 
 - **name**, character(\*), default = "species \#id"
@@ -79,7 +79,7 @@ Currently available options are:
 - *"cary"* - Push the particles using the algorithm proposed by Higuera and Cary \[4\].  This method is volume-preserving (like Boris) and gives the correct $E \times B$ force (like Vay).
 - *"exact"* or *"analytic"* - Performs an exact integration of the particle momenta assuming constant fields for a given time step \[5\].  The `rad_react` parameter can be set to `.true.` to include a perturbation from radiation reaction with this pusher, and the `iter_tol` parameter is used to specify the root-finding convergence threshold.
 - *"exact-rr"* or *"analytic-rr"* - Performs an exact integration of the particle momenta based on the semi-classical form of radiation reaction in the Landau-Lifshitz equation, assuming constant fields for a given time step \[5\]. The `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck, and the `q_real` parameter should be set within this section. For the strong-field regime, the *“exact-rr”* pusher is recommended due its improved accuracy compared to the *“exact”* pusher with `rad_react` set to `.true.`.
-- *"radcool"* - Radiation cooling algorithm. If specified, the `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck.
+- *"radcool"* - This algorithm takes into account classical radiation reaction using the Landau-Lifshitz equation of motion, where particle motion is integrated with the fourth-order Runge-Kutta method (we neglect the explicit temporal derivatives in the L-L equation) \[6\]. If specified, the `n0` or `omega_p0` parameter should be specified in the [simulation](Simulation.md) portion of the input deck.
 
 **rqm** - specifies the 'reciprocal charge over mass ratio' (i.e., m/q) in
 regard to electron mass and absolute charge for this species. Electrons
@@ -137,7 +137,6 @@ species to make binary Coulomb collisions with itself. If specified, the `q_real
 - *"standard"/"profile"* - Standard initialization from a specified density profile.
 - *"constq"* - Injects particles into an area defined by certain grid cell indices using a fixed charge per particle (as opposed to a fixed number of particles per cell).
 - *"beamfocus"* - Used to inject a particle beam with specified Gaussian width, focus, etc.
-- *"betatronfel"* - Injects particles for a betatron FEL source.
 - *"file"* - Used to inject particles from a specified RAW particle file.
 
 **iter_tol** - specifies the convergence threshold of root-finding routines in the exact pusher.
@@ -169,3 +168,5 @@ species
 \[4\] [A. V. Higuera and J. R. Cary, "Structure-preserving second-order integration of relativistic charged particle trajectories in electromagnetic fields," Phys Plasmas, vol. 24, no. 5, p. 052104, 2017.](https://doi.org/10.1063/1.4979989)
 
 \[5\] [F. Li, et al., "Accurately simulating nine-dimensional phase space of relativistic particles in strong fields," J Comput Phys, vol. 438, p. 110367, 2021.](https://doi.org/10.1016/j.jcp.2021.110367)
+
+\[6\] [Vranic, M., et al., “Classical radiation reaction in particle-in-cell simulations,” Comput Phys Commun, vol. 204, pp. 141–151, 2016.](https://doi.org/10.1016/j.cpc.2016.04.002)
