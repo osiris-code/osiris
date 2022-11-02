@@ -22,7 +22,6 @@ cathode particles will be injected. It accepts the following data:
 - **den_min**, real, default = 0.0
 - **prof_type**, character(\*), default = "uniform"
 - **mov_inj**, logical, default = .false.
-- **tr_u_expression**(2), character(\*), default = "off"
 - **deposit_current**, logical, default = .true.
 
 <!-- -->
@@ -71,8 +70,6 @@ the particle bunch being injected. Valid values are:
 or a moving injector plane (`.true.`). Plane moves with the speed of light. Please
 note that, to avoid unphysical fields, a neutral plasma must be injected
 (zero currents).
-
-**tr_u_expression** - specify TODO
 
 **deposit_current** - specifies whether or not the electric current from the cathode particles should be deposited.
 

@@ -101,8 +101,8 @@ changed and doing so will result in a run-time error.
 
 * [el_mag_fld](Electro-Magnetic_Field.md) - (optional) - solver type, initial/external fields,
 smoothing, etc
-* [emf_solver](Electro-Magnetic_Field_Solver.md) - (optional) - electro-magnetic field solvers
 * [emf_bound](Electro-Magnetic_Field_Boundaries.md) - electro-magnetic field boundaries
+* [emf_solver](Electro-Magnetic_Field_Solver.md) - (optional) - electro-magnetic field solvers
 * [smooth](Smooth.md) - (optional) - electro-magnetic field smoothing
 * [diag_emf](Electro-Magnetic_Field_Diagnostics.md) - (optional) - electo-magnetic field diagnostics
 

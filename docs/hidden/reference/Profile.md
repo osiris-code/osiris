@@ -5,7 +5,7 @@ is generally required in the input file. If parameters are not specified, the
 code will default to a uniform density profile with density = 1.0. One
 of these sections should exist for every species we intend to use.
 
-There are various types of profiles allowed, which are specified in the [species](Species.md) portion of the input deck. The currently available types are *"standard"/"profile"*, *"constq"*, *"beamfocus"*, *"betatronfel"* and *"file"*, each of which are described below.
+There are various types of profiles allowed, which are specified in the [species](Species.md) portion of the input deck. The currently available types are *"standard"/"profile"*, *"constq"*, *"beamfocus"* and *"file"*, each of which are described below.
 
 ## Standard profile
 
@@ -245,20 +245,6 @@ of 0 is returned. The `gauss_n_sigma(i)` parameter, if specified, takes preceden
 **uth** - specify the beam thermal momentum at the focal plane in each dimension.
 
 **gamma** - specifies the Lorentz factor, $\gamma$, associated with the longitudinal momentum (`p1`) of the particles after acceleration.
-
-## Betatron FEL
-
-This profile type is selected by setting `init_type` to *"betatronfel"* in the [species](Species.md) portion of the input deck. A namelist section titled `betatron_fel` must precede the `profile` section (accepting all of the same inputs as the standard profile type), and it accepts the following data:
-
-- **gamma_0**, real, default = 50.0
-- **K_number**, real, default = 1.0
-- **DE_E**, real, default = 0.0
-- **DK_K**, real, default = 0.0
-- **rotation_center**(3), real, default = 0.0
-- **init_random**(3), logical, default = .true.
-- **in_boosted_frame**, logical, default = .true.
-
-TODO: further documentation on these parameters.
 
 ## Initialization from a RAW particle file
 
