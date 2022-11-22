@@ -85,11 +85,11 @@ rad_y only affects 3D runs.
 
 **direction** (integer) Direction of the Alfven wave propagation.  If direction==1 then the Alfven wave will propagate along the x1 direction, if direction==2 then the Alfven wave will propagate along the x2 direction.  This parameter applies to ant_type==3 only.
 
-**chirp** amplitude of the frequency shift, the time dependent frequency omega(T) = (omega0 + chirp*T)
+**chirp** amplitude of the frequency shift, the time dependent frequency omega(T) = (omega0 + chirp \times T)
 
 **jitterw** amplitude of the jitter frequency
 
-**jitteromg** the frequency of the jitter.  Using both jitterw and jitteromg, you can control the frequency jitter by the formula omega(t) = omega0 + jitterw*cos(Time*jitteromg)
+**jitteromg** the frequency of the jitter.  Using both jitterw and jitteromg, you can control the frequency jitter by the formula omega(t) = omega0 + jitterw \times cos(Time \times jitteromg)
 
 Here's an example of an antenna section for a 2D run.
 
