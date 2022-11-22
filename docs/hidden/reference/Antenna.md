@@ -22,10 +22,7 @@ accepts the following data:
 - **rad_x**, float, defaullt = 0.0
 - **rad_y**, float, default = 0.0
 - **t_offset**, float, default = 0.0
-- **spin**, integer, default = 0
 - **direction**, integer, default = 1
-- **power**, integer, default = 8
-- **eps**, float, default = 0.0001
 - **chirp**, float, default = 0.0
 - **jitterw**, float, default = 0.0
 - **jitteromg**, float, default = 1.0
@@ -84,14 +81,15 @@ normalized units. y0 only affects 3D runs.
 (which always has a gaussian transverse profile) in normalized units.
 rad_y only affects 3D runs.
 
-**t_offset** TODO
-**spin** TODO
-**direction** TODO
-**power** TODO
-**eps** TODO
-**chirp** TODO
-**jitterw** TODO
-**jitteromg** TODO
+**t_offset** t_offset provides a time offset for the envelope function.  In situations where the rise time is very very large but the system is below the LPI threshold for a long time, you can turn on the t_offset so the system does not spend a long period of time under threshold.  In short, the envelope function is advanced by t_offset when this parameter is set to a non-zero value.  t_offset is given in simulation unit.
+
+**direction** (integer) Direction of the Alfven wave propagation.  If direction==1 then the Alfven wave will propagate along the x1 direction, if direction==2 then the Alfven wave will propagate along the x2 direction.  This parameter applies to ant_type==3 only.
+
+**chirp** amplitude of the frequency shift, the time dependent frequency omega(T) = (omega0 + chirp*T)
+
+**jitterw** amplitude of the jitter frequency
+
+**jitteromg** the frequency of the jitter.  Using both jitterw and jitteromg, you can control the frequency jitter by the formula omega(t) = omega0 + jitterw*cos(Time*jitteromg)
 
 Here's an example of an antenna section for a 2D run.
 
