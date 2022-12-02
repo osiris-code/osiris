@@ -211,25 +211,15 @@ solver. This has an impact on the actual dispersion relation that is
 solved. Valid options are:
 
 - *"yee"* - Use the standard Yee solver.
-- *"4order"* - Use a 4th order accurate approximation for the calculation
-  of the spatial derivatives, which mainly improves the anisotropy in
-  the phase velocity. This is the same as choosing the "stencil" option
-  with k1 = -1/8 and k2 = 0, but uses a specialized routine which makes
-  it much faster than that option.
+- *"custom"* - Recommended option if not using Yee solver.  Allows for using solvers that eliminate numerical Cherenkov radiation \[2\], remove unphysical fields surrounding relativistic charged particles and reduce numerical dispersion errors in `x1` \[3\], remove dispersion errors and correct for time-stagger errors in the Lorentz force \[4\], or to use an explicitly defined set of coefficeints.  See the [emf_solver](Electro-Magnetic_Field_Solver.md) section for more information.
 - *"stencil"* - Use a linear combination of 3 methods for calculating the
   spatial derivatives, using different grid points, with relative
-  weights defined by the **k1** and **k2** parameters defined below \[2\].
+  weights defined by the **k1** and **k2** parameters defined below \[5\].
 - *"ndfx"* - Use a Numerical Dispersion Free (along X1 direction) solver.
   **IMPORTANT:** Time step condition is changed to dt \< dx1, not the
-  usual Courant condition used for other solvers \[3\].
-- *"kark"* - Use a Numerical Dispersion Free (along X1, X2, and X3
-  directions) solver \[4\]. **IMPORTANT:** Solver assumes **cubic (square)
-  cells** and time step condition is changed to dt \< dx1, not the usual
-  Courant condition used for other solvers.
+  usual Courant condition used for other solvers \[6\].
 - *"lehe"* - Use the solver developed by R. Lehe. **IMPORTANT:** time step
-  condition is changed to dt \< dx1 \[5\].
-- *"ck"* - Use the Cole-Karkkainen Solver \[4\] \[6\].
-- *"fei"* - TODO
+  condition is changed to dt \< dx1 \[7\].
 
 Here's an example of a el_mag_fld section that specifies an external
 magnetic field of 1.0 normalized units along x3.
@@ -247,12 +237,14 @@ el_mag_fld
 
 \[1\] [B. B. Godfrey and J.-L. Vay, “Suppressing the numerical Cherenkov instability in FDTD PIC codes,” Journal of Computational Physics, vol. 267, pp. 1–6, Jun. 2014.](https://arxiv.org/abs/1401.0838)
 
-\[2\] [A.D. Greenwood et al., "On the elimination of numerical Cerenkov radiation in PIC simulations", Journal of Computational Physics 201 (2004) 665–684](https://www.sciencedirect.com/science/article/pii/S0021999104002608)
+\[2\] [F. Li, et al., “Controlling the numerical Cerenkov instability in PIC simulations using a customized finite difference Maxwell solver and a local FFT based current correction,” Comput Phys Commun, vol. 214, pp. 6-17, 2017.](https://doi.org/10.1016/j.cpc.2017.01.001)
 
-\[3\] [A. Pukhov, "Three-dimensional electromagnetic relativistic particle-in-cell code VLPL (Virtual Laser Plasma Lab)", J. Plasma Physics (1999), vol. 61, part 3, pp. 425–433](https://www.cambridge.org/core/journals/journal-of-plasma-physics/article/threedimensional-electromagnetic-relativistic-particleincell-code-vlpl-virtual-laser-plasma-lab/7FBA476D599E2F19DFEA3F0F2F84FFAB)
+\[3\] [X. Xu, et al., “On numerical errors to the fields surrounding a relativistically moving particle in PIC codes,” J Comput Phys, vol. 413, p. 109451, 2020.](https://doi.org/10.1016/j.jcp.2020.109451)
 
-\[4\] [M. Karkkainen et al., "Low-Dispersion Wake Field Calculation Tools", Proceedings of ICAP 2006, Chamonix, France, MOM2IS03](https://www.researchgate.net/publication/228342906_Low-dispersion_wake_field_calculation_tools)
+\[4\] [F. Li, et al., “A new field solver for modeling of relativistic particle-laser interactions using the particle-in-cell algorithm,” Comput Phys Commun, vol. 258, p. 107580, 2021.](https://doi.org/10.1016/j.cpc.2020.107580)
 
-\[5\] [R. Lehe, et.al., "Numerical growth of emittance in simulations of laser-wakefield acceleration", Physical Review Special Topics-Accelerators and Beams, vol. 16, no. 2, p. 021301, Feb. 2013](https://www.researchgate.net/publication/258097872_Numerical_growth_of_emittance_in_simulations_of_laser-wakefield_acceleration)
+\[5\] [A.D. Greenwood et al., "On the elimination of numerical Cerenkov radiation in PIC simulations", Journal of Computational Physics 201 (2004) 665–684](https://doi.org/10.1016/j.jcp.2004.06.021)
 
-\[6\] [J. B. Cole, "A high-accuracy Yee algorithm based on nonstandard finite differences: new developments and verifications", IEEE Trans. Antennas Prop., vol. 50, no. 9, Sept 2002, pp. 1185–1191](https://ieeexplore.ieee.org/document/1048990)
+\[6\] [A. Pukhov, "Three-dimensional electromagnetic relativistic particle-in-cell code VLPL (Virtual Laser Plasma Lab)", J. Plasma Physics (1999), vol. 61, part 3, pp. 425–433](https://www.cambridge.org/core/journals/journal-of-plasma-physics/article/threedimensional-electromagnetic-relativistic-particleincell-code-vlpl-virtual-laser-plasma-lab/7FBA476D599E2F19DFEA3F0F2F84FFAB)
+
+\[7\] [R. Lehe, et.al., "Numerical growth of emittance in simulations of laser-wakefield acceleration", Physical Review Special Topics-Accelerators and Beams, vol. 16, no. 2, p. 021301, Feb. 2013](https://doi.org/10.1103/PhysRevSTAB.16.021301)
