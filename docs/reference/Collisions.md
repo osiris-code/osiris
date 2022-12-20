@@ -43,17 +43,14 @@ The input deck can include the following data:
 - **root_finder**, string, default = 'None'
 
 Note it is also necessary to set either the **n0** or the **omega_p0**
-parameters in the [simulation
-section](/reference/simulation) to specify the
+parameters in the [simulation section](simulation) to specify the
 reference density; and the **q_real**, **if_collide**, and
-**if_like_collide** parameters in [species
-section](/reference/species) for any species which are
+**if_like_collide** parameters in [species section](species) for any species which are
 colliding.
 
 **n_collide** specifies the number of iterations between collisions. If
 set to 0 collisions will be turned off. This parameter must be a
-multiple of **n_sort** (see the [species
-section](/reference/species)).
+multiple of **n_sort** (see the [species section](species)).
 
 **nx_collision_cells** specifies the number of simulation cells per
 collisional cell in each direction. The PIC grid must be a multiple of

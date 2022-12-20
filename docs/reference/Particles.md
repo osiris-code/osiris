@@ -82,7 +82,7 @@ the extra current grids.
 **grid_center** - specifies if the field values are centered at the corner of the cell (full momentum conserving).
 
 **reports** - specifies the grid quantities to report, including
-spatial/time averaging, lineouts, etc., as described in the [grid diagnostics section](Grid_Diagnostics.md). The
+spatial/time averaging, lineouts, etc., as described in the [grid diagnostics section](../other/grid_diagnostics). The
 available quantities are:
 
 - "charge" - Total simulation charge

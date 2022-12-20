@@ -97,7 +97,7 @@ It accepts the following data:
 
 **reports** - specifies the spatially resolved quantities to report,
 including spatial/time averaging, lineouts, etc., as described in the
-[grid diagnostics section](Grid_Diagnostics.md). The available
+[grid diagnostics section](../other/grid_diagnostics). The available
 quantities are:
 
 - *"charge"* - Species charge
@@ -113,7 +113,7 @@ quantities are:
 
 **rep_cell_avg** - specifies the cell averaged quantities to report,
 including spatial/time averaging, lineouts, etc., as described in the
-[grid diagnostics section](Grid_Diagnostics.md). The available
+[grid diagnostics section](../other/grid_diagnostics). The available
 quantities are the same as for the `reports` item. After depositing the
 selected quantity, it will be divided by the absolute cell density.
 These diagnostics are controlled by the same parameters as the ones
@@ -121,7 +121,7 @@ specified by the `report` item.
 
 **rep_udist** - specifies grid resolved fluid and thermal momenta
 diagnostics, including spatial/time averaging, lineouts, etc., as
-described in the [grid diagnostics section](Grid_Diagnostics.md). The available
+described in the [grid diagnostics section](../other/grid_diagnostics). The available
 quantities are:
 
 - *"ufl1"*, *"ufl2"*, *"ufl3"* - Average fluid momentum component.

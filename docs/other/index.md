@@ -11,7 +11,23 @@ sidebar:
 
 ## Analytical Function Parser
 
-OSIRIS includes an analytical function parser, so that the user can specify parameters for the simulation in the form of an analytical expression that is evaluated at run time. For details on the capabilities and syntax of the is function parser please check the [function parser](function_parser) section.
+OSIRIS includes an analytical function parser so that the user can specify parameters for the simulation in the form of an analytical expression that is evaluated at run time. For details on the capabilities and syntax of the function parser please check the [function parser](function_parser) section.
+
+## Boundary conditions
+
+OSIRIS implements a number of boundary conditions for particles and fields, including periodic, open-space, reflecting and thermal bath boundaries. For a detailed discussion of the boundary conditions available please read the [boundary conditions section](boundary_conditions).
+
+## Shared Memory (OpenMP) parallelism
+
+In addition to the standard spatial decomposition, OSIRIS can use a hybrid distributed memory (MPI) / shared memory (OpenMP) algorithm that relies on the fact that usually the computer nodes used have a number of cores that share the node memory, and may improve performance in some simulations. To read more about shared memory parallelism in Osiris please consult the [shared memory](shared_memory) section.
+
+## Particle Tracking
+
+Particle tracking diagnostics allow you to follow the detailed trajectories (tracks) of individual particles in your simulation. To read more about particle tracking diagnostics in Osiris please consult the [particle tracking](particle_tracking) section.
+
+## Average/Envelope Grids
+
+Average/Envelope grid diagnostics allow you significantly reduce grid diagnostics file size by spatially averaging/taking the envelope of the original data. To read more about particle tracking diagnostics in Osiris please consult the [average](average_envelope) section.
 
 ## Grid diagnostics
 

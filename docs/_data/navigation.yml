@@ -89,6 +89,13 @@ other:
     children:
     - title: "Function parser"
       url: /other/function_parser
+    - title: "Boundary conditions"
+      url: /other/boundary_conditions
+    - title: "Shared memory parallelism"
+      url: /other/shared_memory
+    - title: "Particle tracking"
+      url: /other/particle_tracking
+    - title: "Average/Envelope Grids"
+      url: /other/average_envelope
     - title: "Grid diagnostics"
       url: /other/grid_diagnostics
-  

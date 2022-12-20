@@ -10,7 +10,7 @@ sidebar:
 ---
 
 This section configures the smoothing for electrical currents and
-electro-magnetic fields. If not present the code will not do any
+electromagnetic fields. If not present the code will not do any
 smoothing. It accepts the following data:
 
 - **type**(x_dim), character(\*), default = "none"
@@ -29,7 +29,7 @@ Valid values are:
 
 - *"none*" - No smoothing. This is the same as not specifying this
   section.
-- *"custom"* - Do a user defined smooth using the **order**, and
+- *"custom"* - Do a user-defined smooth using the **order**, and
   **swfj** parameters
 - *"binomial"* - Do a binomial smoothing with a level set by the
   **order** parameter, i.e., apply a 1,2,1 stencil **order** times.
@@ -37,20 +37,20 @@ Valid values are:
   1,2,1 stencil **(order-1)** times, followed by an appropriate
   compensator that eliminates $k^2$ dependency of the transfer
   function near *k* = 0. Using this filtering with **order = 2** is the
-  same as a 4th order tri-diagonal filter \[1,3\].
-- *"5pass"* - Do a compensated 5 pass binomial smoothing i.e. apply a
+  same as a 4th-order tri-diagonal filter \[1,3\].
+- *"5pass"* - Do a compensated 5-pass binomial smoothing i.e. apply a
   1,2,1 stencil 4 times, followed by a -5,14,-5 stencil.
 - *"tri6"* - Do a 6th order tridiagonal filter \[3\].
 - *"tri8"* - Do an 8th order tridiagonal filter \[3\].
 - *"laserkdx"* - Do a binomial smoothing, i.e. apply a 1,2,1 stencil,
-  followed by compensator that does not attenuate the laser frequency
+  followed by a compensator that does not attenuate the laser frequency
   for the given grid \[2\]. The compensator is similar to -1, 6, -1,
   where the value 6 is corrected according to the **laserkdx_omega0**
-  parameter and the cell size in the smooth direction. Filter is applied
-  ONLY in the direction specified by 'laserkdx_dir', and is disabled in
+  parameter and the cell size in the smooth direction. Filtering is applied
+  ONLY in the direction specified by 'laserkdx_dir' and is disabled in
   the other directions.
 - *"digital"* - Tunable low pass filter \[4\]. This filter uses the
-  'best' approximation to an ideal low pass filter. Filter behaviour is
+  'best' approximation to an ideal low pass filter. Filter behavior is
   controlled by the 'order', 'digital_fc' and 'digital_A' parameters.
   See below for details.
 
@@ -60,11 +60,11 @@ Valid values are:
 points.
 
 **swfj** specify the smoothing parameters for "custom" smooth. Smoothing
-is done as a sequence of convolutions of 3 point stencils, that can be
+is done as a sequence of convolutions of 3-point stencils, that can be
 defined independently for all directions. The number of stencils to be
 applied for direction 'x_dim' is controlled by the *order('x_dim')*
-parameter. swfj(i,j,k) with i = {1,..,3}, j = {1, ..., order(x_dim)}, k
-= {1, ..., x_dim}, and defines the stencil value for point i, to be used
+parameter. `swfj(i,j,k)` with `i = {1,..,3}`, `j = {1, ..., order(x_dim)}`, and `k
+= {1, ..., x_dim}` defines the stencil value for point i, to be used
 in the smoothing pass j, for direction k. It is not necessary to
 normalize the stencil coefficients; the code will do so automatically.
 
@@ -85,7 +85,7 @@ controls the order of the filter. The resulting kernel will use
 $2 \times order + 1$ points. Increasing the **order** parameter improves
 the sharpness of the filter.
 
-Here's a simple 2D example using binomial compensated smoothing on all
+Here's a simple 2D example using binomial compensated smoothing in all
 directions:
 
 ```text
@@ -119,14 +119,14 @@ smooth
 
 ## Smoothing and Parallel Decomposition
 
-The code will actually do the smoothing in a single
+The code will do the smoothing in a single
 pass, by first calculating the larger smoothing window that corresponds
 to the multi-pass smoothing specified, and then applying this larger
 window only once. This is done mainly to avoid having to update the
 current/fields on parallel jobs at the end of each smoothing pass which
 results in better performance and allows the current smooth and boundary
 update routines to be completely independent. However, this has the
-downside of requiring extra guard cells on each node to accomodate the
+downside of requiring extra guard cells on each node to accommodate the
 larger smoothing window. Since Osiris only allows for guard cells
 corresponding to a single remote node, this imposes a limit on the
 minimal number of cells per node you can have in a given direction. With

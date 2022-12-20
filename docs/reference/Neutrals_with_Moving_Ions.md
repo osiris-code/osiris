@@ -2,7 +2,7 @@
 layout: single
 classes: wide
 title: Neutrals with Moving Ions
-permalink: /reference/num_neutral_mov_ions
+permalink: /reference/neutral_mov_ions
 usemathjax: true
 
 sidebar:

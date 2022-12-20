@@ -2,7 +2,7 @@
 layout: single
 classes: wide
 title: Electro-Magnetic Field Diagnostics
-permalink: /reference/emf_diag
+permalink: /reference/diag_emf
 usemathjax: true
 
 sidebar:
@@ -71,7 +71,7 @@ wants data to be saved in double precision this parameter must be set to
 8. This option is ignored if OSIRIS is compiled in single precision.
 
 **reports** specifies the grid quantities to report, including
-spatial/time averaging, lineouts, etc., as described in the [grid diagnostics section](Grid_Diagnostics.md). The
+spatial/time averaging, lineouts, etc., as described in the [grid diagnostics section](../other/grid_diagnostics). The
 available quantities are:
 
 - *"e1", "e2", "e3"* - Electric Field components

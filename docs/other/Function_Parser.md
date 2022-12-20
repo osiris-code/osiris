@@ -9,17 +9,16 @@ sidebar:
   nav: "other"
 ---
 
-OSIRIS includes an analytical function parser, so that the user can specify parameters for the simulation in the form of an analytical expression that is evaluated at run time.
+OSIRIS includes an analytical function parser so that the user can specify parameters for the simulation in the form of an analytical expression that is evaluated at run time.
 
-This function will be compiled into a pseudo-code that evaluates quite fast. However the user should bear in mind that this will always be slower to execute than a Fortran function that is compiled into OSIRIS. Furthermore, you should note that compilation is done without any kind of optimization, so that for better performance all unnecessary
+This function will be compiled into a pseudo-code that evaluates quite fast. However, the user should bear in mind that this will always be slower to execute than a Fortran function that is compiled into OSIRIS. Furthermore, you should note that compilation is done without any kind of optimization, so that for better performance all unnecessary
 calculations should be removed from the expression (i.e. "6.4^2" should be written as "40.96").
 
-All calculations are done using double-precision floating point arithmetic, i.e., using the default Fortran type `real(kind(1.0d0))`. This data will from now on be referred to as numeric. As an extension these routines a logical data type is also included, implemented in a manner similar to the C programming language. A value of 0.0 is considered to
-be false, and all other values are considered to be true. This data will from now on be referred to as logical, and is relevant to the `if` function described below.
+All calculations are done using double-precision floating-point arithmetic, i.e., using the default Fortran type `real(kind(1.0d0))`. This data will from now on be referred to as numeric. As an extension of these routines, a logical data type is also included, implemented like in the C programming language. A value of 0.0 is considered to be false, and all other values are considered to be true. This data will from now on be referred to as logical and is relevant to the `if` function described below.
 
 The following operators are defined for this function parser, shown in decreasing order of relative precedence.
 
-Relative precedence of operators (in increasing order)
+**Relative precedence of operators (in increasing order)**
 
 | Type | Operator |
 | :---       | :-: |
@@ -43,7 +42,7 @@ Parenthesis "( )" can (must) be used to change the priorities of operators withi
 * `>=` - Greater than or equal, `a\>=b` returns 1.0 if a is greater than b or equal to b and 0.0 otherwise.
 * `<=` - Smaller than or equal, `a\<=b` returns 1.0 if a is smaller than b or equal to b and 0.0 otherwise.
 * `&&` - Logical intersection, `a && b` returns 1.0 if a and b are true and 0.0 otherwise. a and b are treated as logical values.
-* `||` - Logical union, `a \|\| b` returns 1.0 if a or b are true and 0.0 otherwise. a and b are treated as logical values.
+* `||` - Logical union, `a \|\| b` returns 1.0 if a or b is true and 0.0 otherwise. a and b are treated as logical values.
 
 Here are some examples of simple expressions:
 
@@ -56,14 +55,14 @@ This parser also allows for the use of an "if" function for the conditional eval
 
 * `if( test, A, B )`
 
-`test` is evaluated as a logical value. If test is true then `A` is returned, otherwise `B` is returned. `A` and `B` can be any valid expressions, including other if functions, thus allowing for nested if structures. Here are some examples:
+`test` is evaluated as a logical value. If `test` is true then `A` is returned, otherwise, `B` is returned. `A` and `B` can be any valid expressions, including other if functions, thus allowing for nested if structures. Here are some examples:
 
 ```text
 "if( x1 > 5.0, x1-5.0, 0.0)"
 "if( (x1 > 4.0) && (x1<5.0), 1.0, 0.0)"
 ```
 
-Finally the following mathematical functions are also implemented. The general syntax is:
+Finally, the following mathematical functions are also implemented. The general syntax is:
 
 * `func(x)`, `func(x,y)`, `func(x,y,z)` - for single, double or triple parameter functions
 

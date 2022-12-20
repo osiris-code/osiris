@@ -21,7 +21,7 @@ If not present, the code will not do any neutral diagnostics. It accepts the fol
 - **prec**, integer, default = 4
 
 **reports** - specifies the grid quantities to report, including
-spatial/time averaging, lineouts, etc., as described in the [grid diagnostics section](Grid_Diagnostics.md). The
+spatial/time averaging, lineouts, etc., as described in the [grid diagnostics section](../other/grid_diagnostics). The
 available quantities are:
 
 - "ion_charge" - Background ion charge density (particle density times

@@ -10,7 +10,7 @@ OSIRIS implements a number of boundary conditions for particles and fields, incl
 
 ## Shared Memory (OpenMP) parallelism
 
-In addition to the standard spatial decomposition, OSIRIS can use a hybrid distributed memory (MPI) / shared memory (OpenMP) algorithm that relies on the fact that usually the computer nodes used have a number of cores that share the node memory, and may improve performance in some simulations. To read more about shared memory parallelism in Osiris please consult the [shared memory](Shared_Memory.md) section of the User Guide..
+In addition to the standard spatial decomposition, OSIRIS can use a hybrid distributed memory (MPI) / shared memory (OpenMP) algorithm that relies on the fact that usually the computer nodes used have a number of cores that share the node memory, and may improve performance in some simulations. To read more about shared memory parallelism in Osiris please consult the [shared memory](Shared_Memory.md) section of the User Guide.
 
 ## Diagnostics
 

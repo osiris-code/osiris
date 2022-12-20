@@ -33,24 +33,24 @@ where
 - **quant** specifies the quantity to be saved. See each specific diagnostics section to find out which grid quantities are available for diagnostics.
 - **tavg** reports a time average of the selected quantity. The number of time steps averaged is controlled by the *n_tavg* parameter described below. Time averages can be used together with the data reduction operations described below.
 - **savg** reports a spatial average of the selected quantity. The number of cells to average in each direction are specified using the *n_ave* parameter described below. The original grid size doesn't need to be a multiple of *n_ave*, but the diagnostic will be faster in this case.
-- **senv** reports a spatial envelope of the selected quantity, calculated by finding the maximum absolute value of the quantity in a number of neighboring grid cells. The number of cells to sample in every direction are specified using the *n_ave* parameter described below. The original grid size doesn't need to be a multiple of *n_ave*, but the diagnostic will be faster in this case.
+- **senv** reports a spatial envelope of the selected quantity, calculated by finding the maximum absolute value of the quantity in a given number of neighboring grid cells. The number of cells to sample in every direction is specified using the *n_ave* parameter described below. The original grid size doesn't need to be a multiple of *n_ave*, but the diagnostic will be faster in this case.
 - **line** (not available in 1D) extracts a single lineout from the selected grid quantity. The parameters specifying the line direction and position must follow:
   - **xj** must be "x1", "x2", or "x3" specifying the direction of the line to be extracted.
   - **j1**, **j2** - (*j2* in 3D only) are integers specifying the grid cell coordinates crossed by the line, and refer to the coordinates other than the line direction.
 - **slice** (3D only) extracts a 2D slice from the selected grid quantity. The parameters specifying the slice direction and position must follow:
-  - **xj** must be "x1", "x2", or "x3" specifying the normal direction of the slice be extracted.
+  - **xj** must be "x1", "x2", or "x3" specifying the normal direction of the slice to be extracted.
   - **j1** is an integer specifying the grid cell coordinates of the slice in the normal direction.
 
-The *savg*, *senv*, *line*, and *slice* options are mutually exclusive and only one can be used in each diagnostic. A detailed description of the spatial average / envelope diagnostics can be found in the [average and envelope grids](../user/Average_Envelope_Grids.md)
-section of the user guide.
+The *savg*, *senv*, *line*, and *slice* options are mutually exclusive and only one can be used in each diagnostic. A detailed description of the spatial average/envelope diagnostics can be found in the [average and envelope grids](average_envelope)
+section of the documentation.
 
 ## Frequency of Diagnostics
 
-The frequency of data dumps is controlled by three parameters for both normal and time averaged diagnostics:
+The frequency of data dumps is controlled by three parameters for both normal and time-averaged diagnostics:
 
 - **ndump_fac** - controls the frequency of full grid diagnostics.
-- **ndump_fac_ave** - controls the frequency of spatial average / envelope grid diagnostics.
-- **ndump_fac_lineout** - controls the frequency of lineout / slice diagnostics.
+- **ndump_fac_ave** - controls the frequency of spatial average/envelope grid diagnostics.
+- **ndump_fac_lineout** - controls the frequency of lineout/slice diagnostics.
 
 These values are multiplied by the global `ndump` parameter defined in the `time_step` section to get the actual diagnostic frequency. For example, if `ndump = 2`, `ndump_fac = 10`, and `ndump_fac_lineout = 1`, then the full grid will be output every 20 timesteps and a lineout will be output every 2 timesteps.
 
@@ -58,8 +58,8 @@ These values are multiplied by the global `ndump` parameter defined in the `time
 
 The time average, spatial average, and spatial envelope diagnostics are controlled by the following parameters:
 
-- **n_ave** specifies the number of gridpoints on each direction to average over/sample for spatially averaged/envelope dumps.
-- **n_tavg** specifies the number of time steps to be used when calculating the time averaged diagnostics.
+- **n_ave** specifies the number of gridpoints in each direction to average over/sample for spatially averaged/envelope dumps.
+- **n_tavg** specifies the number of time steps to be used when calculating the time-averaged diagnostics.
 
 ## Example
 
