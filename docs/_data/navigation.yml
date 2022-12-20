@@ -1,66 +1,94 @@
-ref:
+main:
   - title: "Input file structure"
-    url: /index
-  - title: "Section reference"
+    url: /input
+  - title: "Reference guide"
+    url: /reference
+  - title: "Other topics"
+    url: /other
+
+input:
+  - title: "Input file structure"
+    url: /input
+    children:
+    - title: "General simulation parameters"
+      url: /input/#general-simulation-parameters
+    - title: "Electro-Magnetic Fields"
+      url: /input/#electro-magnetic-fields
+    - title: "Particles"
+      url: /input/#particles
+    - title: "Laser Pulses"
+      url: /input/#laser-pulses
+    - title: "Electrical Current"
+      url: /input/#electrical-current
+    - title: "Antennas"
+      url: /input/#antennas
+
+
+ref:
+  - title: "Reference guide"
+    url: /reference/
     children:
     - title: "antenna"
-      url: /ref/Antenna
+      url: /reference/antenna
     - title: "antenna_array"
-      url: /ref/Antenna_Array
+      url: /reference/antenna_array
     - title: "cathode"
-      url: /ref/Cathode
+      url: /reference/cathode
     - title: "collisions"
-      url: /ref/Collisions
+      url: /reference/collisions
     - title: "current"
-      url: /ref/Electric_Current_Diagnostics
+      url: /reference/current
     - title: "diag_current"
-      url: /ref/Electric_Current
+      url: /reference/diag_current
     - title: "diag_emf"
-      url: /ref/Electro-Magnetic_Field_Diagnostics
+      url: /reference/diag_emf
     - title: "diag_neutral"
-      url: /ref/Neutrals_Diagnostics
+      url: /reference/diag_neutral
     - title: "diag_species"
-      url: /ref/Species_Diagnostics
+      url: /reference/diag_species
     - title: "el_mag_fld"
-      url: /ref/Electro-Magnetic_Field
+      url: /reference/el_mag_fld
     - title: "emf_bound"
-      url: /ref/Electro-Magnetic_Field_Boundaries
+      url: /reference/emf_bound
     - title: "grid"
-      url: /ref/Grid
+      url: /reference/grid
     - title: "neutral"
-      url: /ref/Neutrals
+      url: /reference/neutral
     - title: "neutral_mov_ions"
-      url: /ref/Neutrals_with_Moving_Ions
+      url: /reference/neutral_mov_ions
     - title: "node_conf"
-      url: /ref/Node_Configuration
+      url: /reference/node_conf
     - title: "particles"
-      url: /ref/Particles
-    - title: "pgc"
-      url: /ref/Ponderomotive_Guiding_Center
+      url: /reference/particles
     - title: "profile"
-      url: /ref/Profile
+      url: /reference/profile
     - title: "restart"
-      url: /ref/Restart
+      url: /reference/restart
     - title: "simulation"
-      url: /ref/Simulation
+      url: /reference/simulation
     - title: "smooth"
-      url: /ref/Smooth
+      url: /reference/smooth
     - title: "space"
-      url: /ref/Space
+      url: /reference/space
     - title: "spe_bound"
-      url: /ref/Species_Boundary
+      url: /reference/spe_bound
     - title: "species"
-      url: /ref/Species
+      url: /reference/species
     - title: "time"
-      url: /ref/Time
+      url: /reference/time
     - title: "time_step"
-      url: /ref/Time_Step
+      url: /reference/time_step
     - title: "udist"
-      url: /ref/Momentum_Distribution
+      url: /reference/udist
     - title: "zpulse"
-      url: /ref/Laser_Pulse
-  - title: "Grid Diagnostics"
-    url: /ref/Grid_Diagnostics
-  - title: "Analytical Function Parser"
-    url: /ref/Function_Parser
+      url: /reference/zpulse
 
+other:
+  - title: "Other topics"
+    url: /other
+    children:
+    - title: "Function parser"
+      url: /other/function_parser
+    - title: "Grid diagnostics"
+      url: /other/grid_diagnostics
+  
