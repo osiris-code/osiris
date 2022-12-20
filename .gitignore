@@ -2,3 +2,7 @@
 .*
 !/.gitignore
 
+docs/_site/
+docs/assets/images/.DS_Store
+docs/Gemfile.lock
+

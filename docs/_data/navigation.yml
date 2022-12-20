@@ -1,0 +1,66 @@
+ref:
+  - title: "Input file structure"
+    url: /index
+  - title: "Section reference"
+    children:
+    - title: "antenna"
+      url: /ref/Antenna
+    - title: "antenna_array"
+      url: /ref/Antenna_Array
+    - title: "cathode"
+      url: /ref/Cathode
+    - title: "collisions"
+      url: /ref/Collisions
+    - title: "current"
+      url: /ref/Electric_Current_Diagnostics
+    - title: "diag_current"
+      url: /ref/Electric_Current
+    - title: "diag_emf"
+      url: /ref/Electro-Magnetic_Field_Diagnostics
+    - title: "diag_neutral"
+      url: /ref/Neutrals_Diagnostics
+    - title: "diag_species"
+      url: /ref/Species_Diagnostics
+    - title: "el_mag_fld"
+      url: /ref/Electro-Magnetic_Field
+    - title: "emf_bound"
+      url: /ref/Electro-Magnetic_Field_Boundaries
+    - title: "grid"
+      url: /ref/Grid
+    - title: "neutral"
+      url: /ref/Neutrals
+    - title: "neutral_mov_ions"
+      url: /ref/Neutrals_with_Moving_Ions
+    - title: "node_conf"
+      url: /ref/Node_Configuration
+    - title: "particles"
+      url: /ref/Particles
+    - title: "pgc"
+      url: /ref/Ponderomotive_Guiding_Center
+    - title: "profile"
+      url: /ref/Profile
+    - title: "restart"
+      url: /ref/Restart
+    - title: "simulation"
+      url: /ref/Simulation
+    - title: "smooth"
+      url: /ref/Smooth
+    - title: "space"
+      url: /ref/Space
+    - title: "spe_bound"
+      url: /ref/Species_Boundary
+    - title: "species"
+      url: /ref/Species
+    - title: "time"
+      url: /ref/Time
+    - title: "time_step"
+      url: /ref/Time_Step
+    - title: "udist"
+      url: /ref/Momentum_Distribution
+    - title: "zpulse"
+      url: /ref/Laser_Pulse
+  - title: "Grid Diagnostics"
+    url: /ref/Grid_Diagnostics
+  - title: "Analytical Function Parser"
+    url: /ref/Function_Parser
+

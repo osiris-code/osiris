@@ -1,0 +1,30 @@
+locale                   : "en-US"
+title                    : "OSIRIS"
+title_separator          : "-"
+subtitle                 : "open-source pic simulations"
+description              : "Fully relativistic, electro-magnetic particle in cell code for kinetic plasma physics simulations"
+
+
+baseurl                  : "/"
+repository               : "osiris-code/osiris"
+
+remote_theme: mmistakes/minimal-mistakes
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-include-cache
+
+minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+
+atom_feed:
+  hide : true
+
+search                   : true
+search_full_content      : true
+search_provider: lunr
+
+lunr:
+  search_within_pages: true
+
+breadcrumbs: true
+
