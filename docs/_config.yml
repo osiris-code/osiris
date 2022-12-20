@@ -5,7 +5,7 @@ subtitle                 : "Reference guide"
 description              : "Fully relativistic, electro-magnetic particle in cell code for kinetic plasma physics simulations"
 
 
-baseurl                  : "/"
+baseurl                  : "/osiris"
 repository               : "osiris-code/osiris"
 
 remote_theme: mmistakes/minimal-mistakes
