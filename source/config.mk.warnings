@@ -1,0 +1,60 @@
+# Hello intrepid Osiris user. If you wish to show all warnings, then comment out the line:
+#   DISABLE_PARANOIA=YES 
+#
+# in the configuration file that you are using (located in the ./config directory. For example, if you are on Hoffman,
+#   look at the ./config/osiris_sys.hoffman file). Alternaitivly, you can alter this file to enable only particular warnings.
+#   Or if you are lazy and dont want to hunt for and open the config file in the ./config directory, 
+#   you can uncomment out the following line to allow all warnings.
+#DISABLE_PARANOIA=NO
+
+ifeq ("$(DISABLE_PARANOIA)","YES")
+  ifneq ("$(MAKECMDGOALS)","clean")
+    $(info )
+    $(info ##############################################################################)
+    $(info )
+    $(info -- Note: Certain compiler warnings have been suppressed.)
+    $(info --       If you feel these warnings might help debug a particularly)
+    $(info --       occult issue, look at the file: ./source/config.mk.warnings)
+    $(info )
+
+    #####################################################
+    # Warnings that are suppressed for Intel Fortran 2003
+    #####################################################
+    ifneq (,$(findstring ifort,$(F03)))
+
+      # warning #7416: Fortran 2003 does not allow this intrinsic procedure.
+      F03 += -diag-disable 7416
+
+      # Disable "warning #6473: Fortran 2003 does not allow boz constant in this context"
+      #   ifort still does it but is warning that officaly 2003 doesn't like it.
+      F03 += -diag-disable 6473
+
+      # Disable "warning #7374: F2003 standard requires all arguments be of the same type and same kind type parameter."
+      F03 += -diag-disable 7374    
+
+      # Disable "warning #6915: Fortran 2003 does not allow data values on a type statement."
+      F03 += -diag-disable 6915
+
+      # Disable "warning #7925: An interface-block in a subprogram that contains an interface-body for a procedure defined by that subprogram is non-standard."
+      F03 += -diag-disable 7925
+
+      # Disable "warning #5268: Extension to standard: The text exceeds right hand column allowed on the line."
+      #     My goodness this isnt 1977. computers have enough memory to handle Moby Dick per line.
+      F03 += -diag-disable 5268
+
+      # Disable "remark #7960: The floating overflow condition was detected while evaluating this operation; the result is an Infinity."
+      $(info --> The QED and Neutral modules are not yet supported in Osiris 4.0.)
+      $(info --    When work on those begins, the compiler warnings may be relvent.)
+      F03 += -diag-disable 7960    
+    endif
+
+    #####################################################
+    # Warnings that are suppressed for GNU gfortran
+    #####################################################
+    ifneq (,$(findstring gfortran,$(F03)))
+    endif
+
+    $(info ##############################################################################)
+    $(info )
+  endif
+endif

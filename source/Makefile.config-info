@@ -1,0 +1,36 @@
+
+
+FPP_FOR_OUTPUT  = $(subst \",\\\",$(subst ','',$(FPP)))
+FPPF_FOR_OUTPUT = $(subst \",\\\",$(subst ','',$(FPPF)))
+F90_FOR_OUTPUT  = $(subst \",\\\",$(subst ','',$(F90)))
+F90F_FOR_OUTPUT = $(subst \",\\\",$(subst ','',$(F90F)))
+CF_FOR_OUTPUT   = $(subst \",\\\",$(subst ','',$(CF)))
+cc_FOR_OUTPUT   = $(subst \",\\\",$(subst ','',$(cc)))
+LDF_FOR_OUTPUT  = $(subst \",\\\",$(subst ','',$(LDF)))
+VERSION_FOR_OUTPUT = $(subst \",\\\",$(subst ','',$(VERSION)))
+BRANCH_FOR_OUTPUT = $(subst \",\\\",$(subst ','',$(BRANCH_NAME)))
+
+gen-config-info:
+	@echo "write(output_unit,'(A)') 'build_info = {'"                              > $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"version\": \"$(VERSION_FOR_OUTPUT)\",'"  >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"branch\": \"$(BRANCH_FOR_OUTPUT)\",'"    >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"dimensions\": \"$(OS_DIM)\",'"           >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"precision\": \"$(PRECISION)\",'"         >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"build_type\": \"$(COMPILATION_TYPE)\",'" >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"system\": \"$(SYSTEM)\",'"               >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"build_tool\": \"make\",'"                >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '  \"build_flags\": {'"                       >> $(builddir)/__generated_config_info
+
+	@printf "write(output_unit,'(A)') '    \"FPP\"  :\"%s\",'\n" "$(FPP_FOR_OUTPUT)"  >> $(builddir)/__generated_config_info
+	@printf "write(output_unit,'(A)') '    \"FPPF\" :\"%s\",'\n" "$(FPPF_FOR_OUTPUT)" >> $(builddir)/__generated_config_info
+	@printf "write(output_unit,'(A)') '    \"F90\"  :\"%s\",'\n" "$(F90_FOR_OUTPUT)"  >> $(builddir)/__generated_config_info
+	@printf "write(output_unit,'(A)') '    \"F90F\" :\"%s\",'\n" "$(F90F_FOR_OUTPUT)" >> $(builddir)/__generated_config_info
+	@printf "write(output_unit,'(A)') '    \"CF\"   :\"%s\",'\n" "$(CF_FOR_OUTPUT)"   >> $(builddir)/__generated_config_info
+	@printf "write(output_unit,'(A)') '    \"cc\"   :\"%s\",'\n" "$(cc_FOR_OUTPUT)"   >> $(builddir)/__generated_config_info
+	@printf "write(output_unit,'(A)') '    \"LDF\"  :\"%s\",'\n" "$(LDF_FOR_OUTPUT)"  >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '   }'" >> $(builddir)/__generated_config_info
+	@echo "write(output_unit,'(A)') '}'"    >> $(builddir)/__generated_config_info
+	@echo ""                                >> $(builddir)/__generated_config_info
+	@python Makefile.linesplit $(builddir)/__generated_config_info > $(builddir)/__generated_config_info.f90
+
+	

@@ -1,0 +1,64 @@
+# Included only if making the python wrapper is enabled. See the main Makefile in this directory
+
+# The wrapper takes preprocessed files (that is, files run though the C-preprocessor)
+#	in ./build/preprocessed and produces wrappers that are output
+#	in ./build/processed_wrapper.
+# It then compiles all the files in both ./build/preprocessed and ./build/processed_wrapper
+#	and creates one large shared library.
+
+ifdef ENABLE_PYTHON
+
+# Python extensions are required to be shared libraries. And
+#	sharded libraries require that the code be compile
+#	as 'Position Independent Code' (aka PIC).
+F90F += -fpic
+CF += -fpic
+CPPF += -fpic
+
+# Note: $(patsubst $(builddir)/processed_wrapper/%.o,processed_wrapper/%.o, $(wildcard $(builddir)/processed_wrapper/*.o))
+#		gets all .o files in form 'build/processed_wrapper/*.o' and converts the paths to be 'processed_wrapper/*.o'
+wrapper_objs_raw = $(builddir)/processed_wrapper/__wrapper__utils.f90
+wrapper_objs_raw += $(builddir)/processed_wrapper/__altered__os-main.f03
+wrapper_objs_raw += $(wildcard $(builddir)/processed_wrapper/*.f90)
+
+# wrapper_objs now has paths like 'build/__wrapper__os-cathode.o'
+wrapper_objs = $(patsubst $(builddir)/processed_wrapper/%.f90,$(builddir)/%.o,$(wrapper_objs_raw))
+wrapper_objs = $(patsubst %.f90,%.o,$(wrapper_objs_raw))
+
+wrapper_srcs = $(wrapper_objs_raw)
+
+
+# Rule for Fortran 90 files in the /build/processed_wrapper directory.
+$(builddir)/processed_wrapper/%.o : $(builddir)/processed_wrapper/%.f90
+	@echo "[F90 wrapper] $(<F)"
+	@cd $(builddir) && $(F90) $(F90F) $(INCPATH) -I.. -o processed_wrapper/$(notdir $(patsubst %.f90,%.o,$(<F))) -c processed_wrapper/$(<F)
+
+# Rule for Fortran 03 files in the /build/processed_wrapper directory.
+$(builddir)/processed_wrapper/%.o : $(builddir)/processed_wrapper/%.f03
+	@echo "[F03 wrapper] $(<F)"
+	@cd $(builddir) && $(F90) $(F90F) $(INCPATH) -I.. -o processed_wrapper/$(notdir $(patsubst %.f03,%.o,$(<F))) -c $(F03_EXTENSION_FLAG) processed_wrapper/$(<F)
+
+# 'gen_wrap' runs wRapacious to create the wrapper files in ./build/processed_wrapper
+#@cd $(builddir) && python3 -c "import wrapacious.Wrapacious as w;w.startup('../../tools/wrapacious/wrapicious_input_deck_gnu_make.py')"	
+gen_wrap:
+	@echo Making Wrapper
+	@cd $(builddir) && rm wrapacious.py
+	@cd $(builddir) && python3 -c "import wrapacious.Wrapacious as w;w.startup('../../tools/wrapacious/wrapicious_input_deck_gnu_make.py')"	
+
+# 'wrapper_compile_preqs' makes sure that the wrappers are generated and that the '__wrapper__utils' and '__altered__os-main' are built
+#	before the rest of the code in ./build/processed_wrapper (which can be built in any order.. there is no dependency between wrapper files)
+wrapper_compile_preqs: $(osiris) gen_wrap $(builddir)/processed_wrapper/__wrapper__utils.o  $(builddir)/processed_wrapper/__altered__os-main.o
+
+# 'wrapper' is the main rule that is called to build the wrapper.
+wrapper: wrapper_compile_preqs $(objs) $(wrapper_objs)
+	@echo Linking Wrapper
+	@cd $(builddir) && $(F90)  $(F90F) -shared -I$(builddir) -o wrapacious $(patsubst $(builddir)/processed_wrapper/%.o,processed_wrapper/%.o, $(wildcard $(builddir)/processed_wrapper/*.o)) $(notdir $(objs)) $(LDF)
+	@echo ""
+	@echo "Copying final results to ./bin/pyosiris.py and ./bin/wracious.so"
+	@echo "   Go into the ./bin directory, and 'import pyosiris' within python to start using the wrapper."
+	@echo ""
+	@cp $(builddir)//wrapacious.py $(bindir)/pyosiris.py
+	@cp $(builddir)/wrapacious $(bindir)/wrapacious.so
+	@cp $(builddir)/wrapacious $(bindir)/wrapacious.dynlib
+	
+endif
