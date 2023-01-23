@@ -1,0 +1,91 @@
+################################################################################
+# Multiplatform Makefile for osiris 2.0 distribution (main makefile)
+#
+################################################################################
+
+# globals
+#########
+SHELL = /bin/sh
+
+# targets
+#########
+
+all: ./config/osiris_config 
+	cd source && $(MAKE)
+
+1d: ./config/osiris_config 
+	./configure -d 1 && cd source && $(MAKE)
+
+2d: ./config/osiris_config 
+	./configure -d 2 && cd source && $(MAKE)
+
+3d: ./config/osiris_config 
+	./configure -d 3 && cd source && $(MAKE)
+
+production: ./config/osiris_config 
+	./configure -t production && cd source && $(MAKE)
+
+profile: ./config/osiris_config 
+	./configure -t profile && cd source && $(MAKE)
+
+debug: ./config/osiris_config 
+	./configure -t debug && cd source && $(MAKE)
+
+ioperf: ./config/osiris_config 
+	cd source && $(MAKE) ioperf
+
+wrapper: ./config/osiris_config 
+	cd source && $(MAKE) wrapper
+
+# configuration
+###############
+
+config/osiris_config:
+	./configure -l
+
+
+# clean etc.
+############
+
+.PHONY: clean
+clean: 
+	cd source && $(MAKE) clean
+
+.PHONY: distclean
+distclean:
+	cd source && $(MAKE) clean
+	rm -rf bin
+	rm -f config/osiris_config
+	rm $(MAKEFILE_LIST)
+
+.PHONY: test
+test: ./bin/osiris-1D.e ./bin/osiris-2D.e ./bin/osiris-3D.e
+	mkdir -p test
+	cd test && ln -fs ../config/Makefile.test Makefile
+	cd test && $(MAKE) test
+	rm -rf test
+
+depend :
+	cd source && ../tools/findFDep.sh && cd -
+
+./bin/osiris-1D.e : 
+	./configure -d 1 && cd source && $(MAKE) osiris.e
+
+./bin/osiris-2D.e : 
+	./configure -d 2 && cd source && $(MAKE) osiris.e
+
+./bin/osiris-3D.e : 
+	./configure -d 3 && cd source && $(MAKE) osiris.e
+
+.PHONY: help
+help:
+	@echo "Osiris Makefile options"
+	@echo
+	@echo "all          - (default) Build configured bin/osiris.?D.e"
+	@echo "1d           - Build bin/osiris.1D.e"
+	@echo "2d           - Build bin/osiris.2D.e"
+	@echo "3d           - Build bin/osiris.3D.e"
+	@echo "wrapper      - Build Python wrapper"
+	@echo "dist         - Build bin/osiris.1D.e bin/osiris.2D.e and bin/osiris.3D.e"
+	@echo "clean        - Remove executables and object files"
+	@echo "help         - Display this message"

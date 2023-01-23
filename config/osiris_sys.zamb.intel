@@ -1,0 +1,116 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System:    zamb / Intel MPI
+#   Compilers: Intel family ( icc, ifort )
+#
+# If you want to use the intel suite you need to load the compilervars in your .bashrc and
+# add a fix regarding
+#
+#   . /opt/intel/bin/compilervars.sh -arch intel64 -platform linux
+#
+##########################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+TIMER = __POSIX_TIMER__
+
+# SIMD
+# Uncomment one of the following lines to enable SSE / AVX optimized code
+#SIMD = SSE
+#SIMD = AVX
+
+# Numeric precision (SINGLE|DOUBLE)
+PRECISION = SINGLE
+#PRECISION = DOUBLE
+
+##########################################################################################
+# Compilers
+
+F90 = mpiifort
+F03 = mpiifort -stand f03 -free
+
+cc  = mpiicc -restrict -ansi-alias
+CC  = mpiicc -restrict -ansi-alias
+
+F90FLAGS_all = -fpp -diag-disable 5117 -align array32byte
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp -nostdinc
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = YES
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (so far only intel compiler requires this)
+F03_EXTENSION_FLAG = -free -Tf
+
+# Enable OpenMP code
+#FPP += -D_OPENMP
+#F90FLAGS_all += -qopenmp
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Debug
+
+# -fpe-all:0
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -debug all -traceback -check all,noarg_temp_created \
+                       -warn all -fpe-all=0 -ftrapuv
+
+# Production
+F90FLAGS_production = $(F90FLAGS_all) -ipo -O3 -no-prec-div -fp-model fast=2 -xHost
+
+# Using intel advisor for profiling
+F90FLAGS_profile    = $(F90FLAGS_all) -O0 -xHost -debug all -qopt-report=5
+
+##########################################################################################
+# C flags
+
+# -wd,981,1418,2259 \
+#debug
+CFLAGS_debug = -O0 -g -debug full -traceback -fp-trap-all=common -Wall -w3 -wd,981,1418,2259\
+               -pedantic -std=c99
+
+# profile
+CFLAGS_profile = -O3 -xHost -std=c99 -debug all
+
+# production
+CFLAGS_production = -fast
+
+##########################################################################################
+# Linker flags
+
+# None required
+# LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+# MPI is supported through wrapper compilers, no flags required
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+H5_ROOT   = /opt/hdf5/1.8.18-intel
+SZIP_ROOT = /opt/szip/2.1-intel
+
+H5_FCOMPILEFLAGS = -I$(H5_ROOT)/include
+H5_FLINKFLAGS    = -L$(H5_ROOT)/lib \
+                   -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 \
+                   -L$(SZIP_ROOT)/lib -lsz -lz -lrt -ldl -lm \
+                   -Wl,-rpath -Wl,$(H5_ROOT)/lib
+
+# Uncomment the following if HDF5 supports parallel MPIIO
+# H5_HAVE_PARALLEL = 1

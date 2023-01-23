@@ -1,0 +1,145 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System:    Deluge @ LLE
+#   Compilers: Intel family ( icc, ifort )
+##########################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+# Uncomment the following to enable parallel I/O
+#PARALLEL_IO = __PARALLEL_IO__
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+TIMER = __POSIX_TIMER__
+
+# SIMD
+# Uncomment one of the following lines to enable SSE / AVX optimized code
+#SIMD = SSE
+SIMD = AVX2
+
+# Numeric precision (SINGLE|DOUBLE)
+#PRECISION = SINGLE
+PRECISION = DOUBLE
+
+##########################################################################################
+# Compilers
+
+# F90 = mpiifort -xCORE-AVX2
+# F03 = mpiifort -xCORE-AVX2 -stand f03 -free
+# FPP = gcc -C -E -x assembler-with-cpp
+# cc  = mpiicc -xCORE-AVX2 -restrict -ansi-alias
+F90 = mpiifort -xCORE-AVX2
+F03 = mpiifort -xCORE-AVX2 -stand f03 -free
+FPP = gcc -C -E -x assembler-with-cpp
+cc  = mpiicc -xCORE-AVX2 -restrict -ansi-alias -fp-model strict
+
+F90FLAGS_all = -fpp -diag-disable 5117 -align array32byte -fp-model strict
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = YES
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (so far only intel compiler requires this)
+F03_EXTENSION_FLAG = -free -Tf
+
+# Turn on this flag if the F2003 compiler does not fully support external type bound
+# procedures. This is required for ifort version < 16.x
+# FPP += -D__NO_EXT_TPB__
+
+# Enable OpenMP code
+FPP += -D_OPENMP
+F90FLAGS_all += -qopenmp
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Debug
+
+# -fpe-all:0
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -debug all -traceback -check all,noarg_temp_created \
+                      -warn all -fpe-all=0 -ftrapuv
+
+# Production
+F90FLAGS_production = $(F90FLAGS_all) -ipo
+
+# Profile Shark
+# you cannot source profile with -ipo -static (which are turned on by -fast)
+# After compilation you must generate the symbol table manually (the system gets confused
+# because of the extra preprocessor, the C code does not require this)
+# go to the directory where the binary is located and run:
+# % dsymutil <binary-name>
+
+F90FLAGS_profile    = $(F90FLAGS_all) -O3 -xHost -debug all
+
+##########################################################################################
+# C flags
+
+# -wd,981,1418,2259 \
+#debug
+CFLAGS_debug = -O0 -g -debug full -traceback -fp-trap-all=common -Wall -w3 -wd,981,1418,2259\
+               -pedantic -std=c11
+
+# profile
+CFLAGS_profile = -O3 -xHost -std=c11 -debug all
+
+# production
+# CFLAGS_production = -fast
+CFLAGS_production = -ipo -O3 -xCORE-AVX2 -prec-div -ansi-alias -std=c11
+
+##########################################################################################
+# Linker flags
+
+# None required
+#LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+# MPI is supported through wrapper compilers, no flags required
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# disable some osiris modules
+DISABLE_RAD = 1
+DISABLE_PGC = 1
+DISABLE_QED = 1
+DISABLE_OVERDENSE = 1
+DISABLE_SHEAR = 1
+DISABLE_XXFEL = 1
+DISABLE_CYLMODES = 1
+
+# HDF5
+
+#H5_ROOT = /opt/hdf5/1.8.11-intel64/
+H5_ROOT = $(shell dirname $(HDF_LIB))
+
+H5_FCOMPILEFLAGS = -I$(H5_ROOT)/include
+H5_FLINKFLAGS    = -L$(H5_ROOT)/lib \
+                   -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 \
+                   -L/lib64 -Wl,-rpath,/lib64 -lz -lrt -ldl -lm -Wl,-rpath,$(H5_ROOT)/lib
+
+# FFTW
+FFTW_ROOT = $(shell dirname $(FFTW_LIB))
+# /opt/lic/intel15/fftw-3.3.4
+# FPP += -DFFTW_ENABLED
+
+FFTW_FCOMPILEFLAGS = -I$(FFTW_ROOT)/include
+# # flags for single precision
+# FFTW_FLINKFLAGS = -L$(FFTW_ROOT)/lib -lfftw3f
+# flags for double precision
+FFTW_FLINKFLAGS = -L$(FFTW_ROOT)/lib -lfftw3
+

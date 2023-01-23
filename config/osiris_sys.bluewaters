@@ -1,0 +1,120 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System:    Bluewaters
+#   Compilers: Intel family with Cray wrapper 
+#
+#   add the following lines to your $HOME/.bashrc
+#
+#        module swap PrgEnv-cray PrgEnv-intel
+#        module load cray-hdf5/1.8.16
+#
+##########################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+# Bluewaters configuration
+MPI = Cray-MPICH2
+BITS = 64
+DISABLE_FEI = True
+DISABLE_QED = True
+DISABLE_PGC = True
+DISABLE_SHEAR = True
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+TIMER = __POSIX_TIMER__
+
+# SIMD
+# The following line enables explicit Intel KNL vectorization
+#SIMD = SSE
+SIMD = AVX
+
+# Numeric precision
+#PRECISION = SINGLE
+PRECISION = DOUBLE
+
+##########################################################################################
+# Compilers
+
+F90 = ftn
+F03 = ftn -stand f03 -free
+cc  = cc  -restrict -ansi-alias
+
+F90FLAGS_all = -fpp -diag-disable 5117 -align array64byte 
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = YES
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (so far only intel compiler requires this)
+F03_EXTENSION_FLAG = -free -Tf
+
+# Enable OpenMP code
+FPP += -D_OPENMP
+F90FLAGS_all += -qopenmp
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Debug
+
+# -fpe-all:0
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -debug all -traceback -check all,noarg_temp_created \
+                      -warn all -ftrapuv 
+
+# Production
+
+F90FLAGS_production = $(F90FLAGS_all) -O3 -no-prec-div -fp-model fast=2 -fma -align array64byte -finline-functions
+
+#F90FLAGS_production = $(F90FLAGS_all) -O2 -traceback -no-prec-div -fp-model fast=2 -fma -align array64byte -finline-functions
+# Profile with VTune
+F90FLAGS_profile    = $(F90FLAGS_all) -O3 -no-prec-div -debug inline-debug-info 
+
+##########################################################################################
+# C flags
+
+# -wd,981,1418,2259 \
+#debug
+CFLAGS_debug = -O0 -g -debug full -traceback -fp-trap-all=common -Wall -w3 -wd,981,1418,2259\
+               -pedantic -std=c99 
+
+# profile
+CFLAGS_profile = -O3 -no-prec-div -debug inline-debug-info -ansi-alias -Wno-uninitialized
+
+# production
+CFLAGS_production = -O3 -no-prec-div -fp-model fast=2 -ansi-alias  -Wno-uninitialized \
+                    -fma -align -finline-functions
+
+##########################################################################################
+# Linker flags
+
+# None required
+# LDFLAGS = -lmemkind 
+
+##########################################################################################
+# Libraries
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+H5_FCOMPILEFLAGS = -I$(HDF5_ROOT)/include 
+H5_FLINKFLAGS    = -L$(HDF5_ROOT)/lib \
+                   -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 \
+                   -Wl,-rpath -Wl,$(H5_ROOT)/lib
+
+FFTW_INSTALL_DIR=/opt/cray/fftw/3.3.4.10/interlagos/
+
+# Uncomment the following if HDF5 supports parallel MPIIO
+# H5_HAVE_PARALLEL = 1

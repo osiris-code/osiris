@@ -1,0 +1,126 @@
+##########################################################################################
+# System specific configuration for THETA @ ALCF
+#   System:    Cray
+#   Compilers: Intel family ( icc, ifort )
+#   MPI:       Cray MPICH
+# See:
+# <http://https://www.alcf.anl.gov/support-center/theta/compiling-and-linking-overview-theta>
+##########################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+TARGET = knl
+
+# Numeric precision
+# PRECISION = SINGLE
+PRECISION = DOUBLE
+
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp
+
+
+SIMD = AVX512
+
+# The Cray compiler wrappers set -xCORE-AVX2 which triggers a warning
+# warning #10121 : overriding '-xCORE-AVX2' with '-xMIC-AVX512'
+# -diag-disable 10121 hides these warnings
+
+F90 = ftn -xMIC-AVX512 -diag-disable 10121
+F03 = ftn -xMIC-AVX512 -diag-disable 10121 -stand f03 -free
+cc  = cc  -xMIC-AVX512 -diag-disable 10121 -std=c99 -ansi-alias
+
+# Enable KNL specific sections of the code
+FPP += -D__KNL__
+
+$(info ----------------------------------------------------------------------)
+$(info  Compiling for knl (Knights Landing) target, with AVX512 instructions)
+$(info ----------------------------------------------------------------------)
+
+
+# Intel compilers don't like our preprocessing and issue a warning:
+# warning #5117: Bad # preprocessor line
+F90FLAGS_all = -fpp -diag-disable 5117 -align array64byte
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (so far only intel compiler requires this)
+F03_EXTENSION_FLAG = -free -Tf
+
+# Enable OpenMP code
+FPP += -D_OPENMP
+F90FLAGS_all += -qopenmp
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Debug
+
+# -fpe-all:0
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -debug all -traceback -check all,noarg_temp_created \
+                      -warn all -ftrapuv
+
+# Production
+F90FLAGS_production = $(F90FLAGS_all) -O3 -prec-div -fp-model fast=2 -fma -align array64byte -finline-functions
+
+# Profile with VTune
+F90FLAGS_profile    = $(F90FLAGS_all) -O3 -prec-div -debug inline-debug-info
+
+##########################################################################################
+# C flags
+
+# -wd,981,1418,2259 \
+#debug
+CFLAGS_debug = -O0 -g -debug full -traceback -fp-trap-all=common -Wall -w3 -wd,981,1418,2259\
+               -pedantic
+
+# profile
+CFLAGS_profile = -O3 -prec-div -debug inline-debug-info -ansi-alias -Wno-uninitialized
+
+# production
+CFLAGS_production = -std=c99 -O3 -prec-div -fp-model fast=2 -ansi-alias -Wno-uninitialized \
+                    -fma -align -finline-functions
+
+##########################################################################################
+# Linker flags
+
+# None required
+#LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+# MPI is supported through wrapper compilers, no flags required
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+# This requires loading the hdf5-parallel module
+H5_ROOT = $(HDF5_ROOT)
+H5_FCOMPILEFLAGS = -I$(H5_ROOT)/include
+H5_FLINKFLAGS    = -L$(H5_ROOT)/lib \
+                   -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 \
+                   -lz -ldl -lm -Wl,-rpath -Wl,$(H5_ROOT)/lib
+
+
+# Set the binary extension to help identify binary type (cpu or knl)
+BIN_EXT = $(TARGET)
+
+# FFTW
+ifneq ("$(FFTW_INC)",)
+  FFTW_ROOT=$(shell echo $(FFTW_INC) | sed -E 's/include *//')
+
+  FFTW_ROOT = /usr/local/fftw-3.3.10
+  FFTW_FCOMPILEFLAGS = -I$(FFTW_ROOT)/include
+  # # flags for single precision
+  # FFTW_FLINKFLAGS = -L$(FFTW_ROOT)/lib -lfftw3f
+  # flags for double precision
+  FFTW_FLINKFLAGS = -L$(FFTW_ROOT)/lib -lfftw3
+endif

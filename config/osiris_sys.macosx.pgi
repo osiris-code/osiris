@@ -1,0 +1,112 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System:    Mac OS X / darwin
+#   Compilers: PGI family ( pgcc, pgfortran )
+##########################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+TIMER = __MACH_TIMER__
+
+# SIMD
+# Uncomment the following line to use SIMD optimized code. You can use SIMD = SSE or
+# SIMD = AVX (pgcc 15.10 does not support AVX intrinsics)
+# SIMD = SSE
+
+# PRECISION
+PRECISION = SINGLE
+#PRECISION = DOUBLE
+
+##########################################################################################
+# Compilers
+
+# When compiling AVX code the following must be used to i) enable AVX code generation (-mavx)
+# and ii) use the clang integrated assembler instead of the GNU based system assembler.
+
+F90 = pgfortran
+
+# Use this to specify specific options for compiling .f03 files
+F03 = $(F90)
+#F03 = pgfortran
+
+
+cc  = pgcc
+CC  = pgcc
+
+# Fortran preprocessor
+FPP = gcc-6.4.0 -C -E -x assembler-with-cpp
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = YES
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+FPP += -D__PGI
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+F90FLAGS_all =
+
+# OpenMP Support
+#F90FLAGS_all += -mp
+#FPP += -D_OPENMP
+
+# Production
+# Intel Core i7 flags
+
+F90FLAGS_production = $(F90FLAGS_all) -fastsse -Mvect=simd:256
+
+# Debug
+
+# -std=f95 is too picky
+
+F90FLAGS_debug      = $(F90FLAGS_all) -gopt -C -Mchkptr -Mchkstk -traceback
+
+# Profile with Shark
+F90FLAGS_profile    = -gopt $(F90FLAGS_production)
+
+
+##########################################################################################
+# C flags
+
+CFLAGS_production =  -tp=sandybridge-64 -fastsse -Mvect=simd:256
+
+CFLAGS_debug      = -tp=sandybridge-64 -gopt
+#-fsanitize=address
+
+CFLAGS_profile    = -tp=sandybridge-64 -gopt $(CFLAGS_production)
+
+##########################################################################################
+# Linker flags
+
+# None required
+#LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+
+OPENMPI_ROOT = /opt/openmpi/3.0.0-pgi
+
+MPI_FCOMPILEFLAGS = $(shell $(OPENMPI_ROOT)/bin/mpif90 --showme:compile)
+MPI_FLINKFLAGS    = $(shell $(OPENMPI_ROOT)/bin/mpif90 --showme:link)
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+
+H5_ROOT = /opt/hdf5/1.10.1-pgi
+
+H5_FCOMPILEFLAGS = -I$(H5_ROOT)/include
+H5_FLINKFLAGS    = -L$(H5_ROOT)/lib -lhdf5_fortran -lhdf5 -lz -lm

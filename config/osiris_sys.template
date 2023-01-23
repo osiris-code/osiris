@@ -1,0 +1,63 @@
+##########################################################################################
+#
+#  OSIRIS configuration template
+#
+##########################################################################################
+
+###################################### Minimal Flags #####################################
+
+# Fortran compiler and flags
+F90 = gfortran-6.4.0 -Ofast -fno-range-check -ffree-line-length-none
+
+# C Compiler
+cc  = gcc-6.4.0 -Ofast
+
+# Fortran external name convention
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# MPI Flags
+# If using a wrapper MPI fortran compiler (e.g. mpiifort) these are not required
+MPI_FCOMPILEFLAGS = $(shell /opt/openmpi/3.0.0/bin/mpif77 --showme:compile)
+MPI_FLINKFLAGS    = $(shell /opt/openmpi/3.0.0/bin/mpif77 --showme:link)
+
+# HDF5 Flags
+H5_FCOMPILEFLAGS = -I/opt/hdf5/1.10.1/include 
+H5_FLINKFLAGS    = -L/opt/hdf5/1.10.1/lib -lhdf5_fortran -lhdf5 -lz -lm
+# Uncomment the following if HDF5 supports parallel MPIIO
+# H5_HAVE_PARALLEL = 1
+
+###################################### Code Options ######################################
+
+# Algorithm precision
+# Set to DOUBLE or SINGLE. If not set the code will use the definition in os-param.f90
+PRECISION = DOUBLE
+
+# SIMD code
+# Set to the required SIMD algorithm (e.g. SSE or BGP). If not set the code
+# will use the standard FORTRAN algorithm 
+SIMD = SSE
+
+# Profiling timer
+# Set the following to a system optimized timer, or leave commented to use a default one.
+# This only affects code profiling measurements.
+#TIMER = __MACH_TIMER__
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = YES
+
+# Uncomment any or all of the follwoing to optionally disable the compilation
+# of certain Osiris simulation modules if you don't have need for them
+# (to speed up compiling the code etc..)
+#DISABLE_PGC = YES
+#DISABLE_QED = YES
+#DISABLE_CYLMODES = YES
+#DISABLE_SHEAR = YES
+
+# Uncomment the following to enable CUDA support
+#ENABLE_CUDA = YES
+
+# Uncomment the following to enable the Python wrapper
+#ENABLE_PYTHON = YES

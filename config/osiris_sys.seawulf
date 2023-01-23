@@ -1,0 +1,131 @@
+##########################################################################################
+#
+#	System specific configuration for OSIRIS 4.0
+#	System:    Seawulf (Linux with Intel compilers + Intel MPI and openmp)
+#
+#	Recommended:
+#		1.Load the intel/compiler module (already contains the MPI wrappers)
+#		2.Download HDF5 from source and compile it (avoid loading current hdf5 module)
+#		3.Correct your HDF5 local in line 121 of this file (H5_ROOT=...)
+#		4.If you don't need double precision / openmp, comment out lines 29, 65 and 66
+#		5.Compile and remember to load also torque and share modules to submit your job
+#
+#	Tested by: L. Diana Amorim - Sep 2017
+#	At the Stony Brook University Seawulf computer cluster intel nodes
+#	(https://it.stonybrook.edu/help/kb/understanding-seawulf)
+#
+##########################################################################################
+
+
+##########################################################################################
+# OSIRIS configuration
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+TIMER = __POSIX_TIMER__
+
+# SIMD
+# Uncomment one of the following lines to enable SSE / AVX optimized code 
+#SIMD = SSE
+SIMD = AVX
+
+# Numeric precision (SINGLE|DOUBLE)
+#PRECISION = SINGLE
+PRECISION = DOUBLE
+
+##########################################################################################
+# Compilers
+
+F90 = mpiifort
+F03 = mpiifort -stand f03 -free
+FPP = gcc -C -E -x assembler-with-cpp 
+cc  = mpiicc -restrict -ansi-alias
+
+F90FLAGS_all = -fpp -diag-disable 5117 -align array32byte 
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = NO 
+#YES
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (so far only intel compiler requires this)
+F03_EXTENSION_FLAG = -free -Tf
+
+# Enable OpenMP code
+FPP += -D_OPENMP
+F90FLAGS_all += -qopenmp
+#-openmp
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Debug
+
+# -fpe-all:0
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -debug all -traceback -check all,noarg_temp_created \
+                      -warn all -fpe-all=0 -ftrapuv 
+
+# Production
+F90FLAGS_production = $(F90FLAGS_all) #-fast
+
+# Profile Shark
+# you cannot source profile with -ipo -static (which are turned on by -fast)
+# After compilation you must generate the symbol table manually (the system gets confused 
+# because of the extra preprocessor, the C code does not require this)
+# go to the directory where the binary is located and run:
+# % dsymutil <binary-name>
+
+F90FLAGS_profile    = $(F90FLAGS_all) -O3 -xHost -debug all 
+
+##########################################################################################
+# C flags
+
+# -wd,981,1418,2259 \
+#debug
+CFLAGS_debug = -O0 -g -debug full -traceback -fp-trap-all=common -Wall -w3 -wd,981,1418,2259\
+               -pedantic -std=c99 
+
+# profile
+CFLAGS_profile = -O3 -xHost -std=c99 -debug all 
+
+# production
+# CFLAGS_production = -fast
+CFLAGS_production = -ipo -O3 -xHost -no-prec-div -ansi-alias
+
+##########################################################################################
+# Linker flags
+
+# None required
+#LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+# MPI is supported through wrapper compilers, no flags required
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+
+H5_ROOT = /gpfs/home/lpintodealme/OPT/HDF5/intelMPI/1.10.1
+
+#HDF5_INCLUDE_PATH = "/gpfs/software/hdf5-1.8.19-intel/include"
+H5_FCOMPILEFLAGS = -I$(H5_ROOT)/include 
+H5_FLINKFLAGS    = -L$(H5_ROOT)/lib \
+                   -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran -lhdf5 \
+                   -lz -lrt -ldl -lm -Wl,-rpath -Wl,$(H5_ROOT)/lib
+
+# Uncomment the following if HDF5 supports parallel MPIIO
+# H5_HAVE_PARALLEL = 1
