@@ -1,0 +1,150 @@
+!--------the node configuration for this simulation--------
+simulation
+{
+  ! the reference plasma frequency must be specified when including
+  ! the radiation reaction effect in the particle pusher
+  omega_p0 = 1.885d15, ! corresponds to 1 um laser
+}
+
+node_conf
+{
+  node_number(1:2) =  2, 2,
+  if_periodic(1:2) =  .true., .true.,
+}
+
+!----------spatial grid----------
+grid
+{
+  nx_p(1:2) =  512, 512,
+  coordinates = "cartesian",
+}
+
+!----------time step and global data dump timestep number----------
+time_step
+{
+  dt     =   0.5,
+  ndump  =   10,
+}
+
+!----------restart information----------
+restart
+{
+  ndump_fac = 0,
+  if_restart = .false.,
+}
+
+!----------spatial limits of the simulations----------
+space
+{
+  xmin(1:2) =  0.000, 0.000,
+  xmax(1:2) =  512.0, 512.0,
+  if_move(1:2) = .false., .false.,
+}
+
+!----------time limits ----------
+time
+{
+  tmin = 0.0, tmax  = 500.0,
+}
+
+!----------field solver set up----------
+el_mag_fld
+{
+  solver = "yee",
+}
+
+!----------boundary conditions for em-fields ----------
+emf_bound
+{
+  type(1:2,1) =   "conducting", "conducting",
+  type(1:2,2) =   "conducting", "conducting",
+}
+
+diag_emf
+{
+  ndump_fac = 10,
+  reports = "e1", "e2", "b1", "b2",
+}
+
+
+!----------number of particle species----------
+particles
+{
+  interpolation = "quadratic",
+  num_species = 1,
+}
+
+!----------information for species 1----------
+species
+{
+  name = "electron",
+  num_par_max = 100000,
+  rqm=-1.0,
+  num_par_x(1:2) = 2, 2,
+
+  ! Exact pusher [based on the solution to the equation of motion without
+  ! radiation reaction (RR)]
+  push_type = "exact",
+  ! if adding the RR with the split method
+  rad_react = .true.,
+
+  ! Exact pusher (based on the solution to the reduced Landau-Lifshitz eq.).
+  ! RR effect is included in the analytic solution (non-split method), and
+  ! thus the parameter "rad_react" which controls the on/off of the split
+  ! RR correction DOES NOT work for this push type.
+  ! push_type = "exact-rr",
+
+  ! Convergence threshold of the time step mapping iteration.
+  ! The default value 1.0d-3 is good enough for most cases but might
+  ! need smaller ones under extreme parameter conditions.
+  iter_tol = 1.0d-3,
+
+  ! Real charge of the species. Need to be specified when the radiation
+  ! reaction is included, i.e., using the 'exact-rr' push type or turning on
+  ! the "rad_react" when using the "exact" push type.
+  q_real = -1.0,
+
+  ! Anomalous moment of the particle. Must be specified if the
+  ! spin precession is also simulated. Except for setting this parameter,
+  ! the initial spin distribution should also be configured in the "sdist"
+  ! paragraph. The configuration examples can be found in the "spin" folder.
+  ! Note that only the spin precession is included, one can only use "exact"
+  ! type.
+  ! anom_mag_moment = 0.0011614,
+}
+
+!----------inital proper velocities-----------------
+udist
+{
+  uth(1:3) = 0.1, 0.1, 0.1,
+  ufl(1:3) = 0.0, 0.0, 0.0,
+}
+
+!----------density profile for this species----------
+profile
+{
+  density = 1.0,
+}
+
+!----------boundary conditions for this species----------
+spe_bound
+{
+  type(1:2,1) = "specular", "specular",
+  type(1:2,2) = "specular", "specular",
+}
+
+!----------diagnostic for this species----------
+diag_species
+{
+  ndump_fac = 1,
+  reports = "charge",
+}
+
+current
+{
+}
+
+smooth
+{
+  type(1:2) = "none", "none",
+}
