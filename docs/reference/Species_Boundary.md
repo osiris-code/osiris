@@ -51,11 +51,11 @@ for thermal boundary conditions. The `thermal_type(k,i)`, with `k = {1,2}` and `
 direction for the lower (`k=1)` or upper (`k=2`) boundary. Possible values
 are:
 
-- *"thermal"* - Use a half-Maxwellian distribution for the velocity
+- _"thermal"_ - Use a half-Maxwellian distribution for the velocity
   component perpendicular to the wall, and use the standard classical
   (Maxwellian) exponential distribution for all other components.
-- *"waterbag"* - Waterbag distribution.
-- *"random dir"* - Random direction distribution, using absolute value
+- _"waterbag"_ - Waterbag distribution.
+- _"random dir"_ - Random direction distribution, using absolute value
   of `uth`.
 
 In all cases, the resulting velocity component perpendicular to the wall
@@ -75,4 +75,18 @@ boundary and to (0.001,0.001,0.001) on the upper boundary.
     uth_bnd(1:3,1,2) = 0.1,0.1,0.1,
     ufl_bnd(1:3,2,2) = 0.001,0.001,0.001,
   }
+```
+
+Note: When using thermal boundary conditions, it is necessary to modify the
+settings for the field boundary conditions from the default.
+
+```text
+    emf_bound
+    {
+      type(1:2,1) = "vpml", "vpml",         ! Equivalent to "open", but more explicit
+      type(1:2,2) = "vpml", "vpml",
+      vpml_bnd_size = 30,                   ! Found to provide good results in a 2D test, larger than the default of 8
+      vpml_diffuse(1:2,1) = .true., .true., ! Allows for damping of electrostatic fields in vpml
+      vpml_diffuse(1:2,2) = .true., .true.,
+    }
 ```
