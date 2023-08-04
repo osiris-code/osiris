@@ -78,7 +78,9 @@ boundary and to (0.001,0.001,0.001) on the upper boundary.
 ```
 
 Note: When using thermal boundary conditions, it is necessary to modify the
-settings for the field boundary conditions from the default.
+settings for the field boundary conditions from the default. In 2D cartesian
+geometry, the option **vpml_diffuse** enables damping of noise from absorbing
+particles that cross the simulation boundary.
 
 ```text
     emf_bound
