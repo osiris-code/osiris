@@ -6,3 +6,56 @@ docs/_site/
 docs/assets/images/.DS_Store
 docs/Gemfile.lock
 
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+*.pyc
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# . (dot) files that various editors leak out
+.*
+!/.gitignore
+!/.github/
+
+# ignore bin directories
+bin*/
+
+#ignore the temporary config/osiris_config file generated on each system
+config/osiris_config
+
+# ignore build dir
+/source/build
+
+# Top level (and only top level) Makefile should be ignored
+/Makefile
+
+# Osiris specific dirs created
+/TIMINGS
+/ioperf
+
+/osiris-4.0.code-workspace
+*.local

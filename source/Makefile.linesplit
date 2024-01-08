@@ -1,0 +1,62 @@
+"""
+  Takes in a file and splits any long lines in a Fortran-90 compliant manner.
+    Prints the results to STDOUT
+"""
+import sys
+import re
+
+LINE_LENGTH_LIMIT = 76
+
+# The folloeing is prepended to each continued line. This must always
+#  end with the '&' character. The extra spaces in front of '&' are
+#  simply to ehanhance readbility in the output.
+EXTENDED_LINE_PREFIX = "   &"
+
+# The -1 here is because we need to add an '&' to the end of the 
+#  output line (so that the input line can line can be further split)
+EXTENDED_LINE_CHUNK_LEN = LINE_LENGTH_LIMIT - len(EXTENDED_LINE_PREFIX) - 1
+
+# read in file and split any long lines to be Fortran compatible.
+if len(sys.argv)< 2:
+  exit()
+
+output_lines = []
+filename = sys.argv[1]; lines = [];
+with open(filename) as file:  
+  lines = file.readlines()
+if len(lines) == 0:
+  exit()
+
+for line in lines:
+  line = line.rstrip()
+  if len(line) <= LINE_LENGTH_LIMIT:
+    output_lines.append(line)
+    continue
+  
+  first_line_bit = line[0:LINE_LENGTH_LIMIT-1] + "&"
+  line_remaining = line[LINE_LENGTH_LIMIT-1:]
+  output_lines.append( first_line_bit )
+
+  while(True):
+    if len( line_remaining ) < (LINE_LENGTH_LIMIT-len(EXTENDED_LINE_PREFIX)):
+      # this last chunk is small enough so it will not need to be extedned anymore
+      line_bit = EXTENDED_LINE_PREFIX + line_remaining
+      output_lines.append( line_bit )
+      break
+    else:
+      # the chunk will have more chunks after 
+      #   (so an '&' is need at the end of this chunk.)
+      line_bit = EXTENDED_LINE_PREFIX + line_remaining[0:EXTENDED_LINE_CHUNK_LEN] + "&"
+      line_remaining = line_remaining[EXTENDED_LINE_CHUNK_LEN:]
+    output_lines.append( line_bit )
+
+# dump output to STDOUT
+for line in output_lines:
+  print(line)
+
+
+
+
+
+
+

@@ -36,13 +36,13 @@ where
 - **senv** reports a spatial envelope of the selected quantity, calculated by finding the maximum absolute value of the quantity in a given number of neighboring grid cells. The number of cells to sample in every direction is specified using the *n_ave* parameter described below. The original grid size doesn't need to be a multiple of *n_ave*, but the diagnostic will be faster in this case.
 - **line** (not available in 1D) extracts a single lineout from the selected grid quantity. The parameters specifying the line direction and position must follow:
   - **xj** must be "x1", "x2", or "x3" specifying the direction of the line to be extracted.
-  - **j1**, **j2** - (*j2* in 3D only) are integers specifying the grid cell coordinates crossed by the line, and refer to the coordinates other than the line direction.
+  - **j1**, **j2** - (*j2* in 3D only) are integers specifying the grid cell coordinates (1-based indexing) crossed by the line, and refer to the coordinates other than the line direction.
 - **slice** (3D only) extracts a 2D slice from the selected grid quantity. The parameters specifying the slice direction and position must follow:
   - **xj** must be "x1", "x2", or "x3" specifying the normal direction of the slice to be extracted.
-  - **j1** is an integer specifying the grid cell coordinates of the slice in the normal direction.
+  - **j1** is an integer specifying the grid cell coordinates (1-based indexing) of the slice in the normal direction.
 
 The *savg*, *senv*, *line*, and *slice* options are mutually exclusive and only one can be used in each diagnostic. A detailed description of the spatial average/envelope diagnostics can be found in the [average and envelope grids](average_envelope)
-section of the documentation.
+section of the documentation.  Note that the **j1** and **j2** indices refer to integer indices in the global grid, which start at 1 (Fortran-based indexing).
 
 ## Frequency of Diagnostics
 

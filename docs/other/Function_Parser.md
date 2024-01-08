@@ -77,7 +77,7 @@ Note that for relevant trigonometric functions the parameter/result is in radian
 * `log(x)` - Natural (Base e) logarithm of x.
 * `asin(x)` - Arc Sine of x.
 * `acos(x)` - Arc Cosine of x.
-* `atan2(x,y)` - Arc Tangent of y/x, taking into account which quadrant the point (x,y) is in.
+* `atan2(y,x)` - Arc Tangent of y/x, taking into account which quadrant the point (x,y) is in.
 * `atan(x)` - Arc Tangent of x.
 * `sqrt(x)` - Square root of x.
 * `not(x)` - Logical not. x is evaluated as a logical expression and the complement is returned.

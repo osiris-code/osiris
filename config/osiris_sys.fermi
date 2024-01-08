@@ -1,0 +1,120 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System: Fermi (CINECA.it) - BlueGene/Q
+#
+# Before compile you must load the following modules
+#    module load bgq-xl
+#    module load hdf5
+#    module load zlib
+#    module load szip
+#    module load papi (optional, PAPI profiling only)
+################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+# The BlueGene timers are used automatically
+
+# SIMD
+# Uncomment the following line to use SIMD optimized code 
+SIMD = BGQ
+
+# Precision
+# In BlueGene/P systems use of single precision code is actually slower, use only
+# if using less memory is required
+PRECISION = DOUBLE
+
+# VERSION
+# Uncomment to override the default version text
+VERSION = fermi
+
+##########################################################################################
+# Compilers
+
+F90 = mpixlf95_r 
+F03 = mpixlf2003_r
+
+cc = mpixlc_r
+CC = mpixlC_r
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp
+
+##########################################################################################
+# Fortran flags
+
+# Enable BG/Q specific code
+FPP += -D__bgq__
+
+# External name mangling
+UNDERSCORE = FORTRANNOUNDERSCORE
+
+# Flag to enable compilation of .f03 files
+F03_EXTENSION_FLAG = -qsuffix=cpp=f03
+
+F90FLAGS_all = -qsuppress=1506-234 -qsuffix=cpp=f90 -qarch=qp -qnosave -qnoescape
+
+# OpenMP Support
+F90FLAGS_all += -qsmp=omp 
+FPP += -D_OPENMP
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Benchmarks were performed using the 2D warm plasma benchmark, quadratic interpolation
+# Recommended production optimization is "-O3"
+# - "-O3"       takes  ~9 min to compile
+# - "-O3 -qhot" takes ~26 min to compile and offers negligible (0.5%) improvement.
+# - "-O4"       takes ~39 min to compile and lowers performance.
+
+# Production
+PRODUCTION_OPT_LEVEL = 3
+F90FLAGS_production =  $(F90FLAGS_all) -O$(PRODUCTION_OPT_LEVEL) -qmaxmem=-1 \
+                       -qalias=nopteovrlp -qnocheck \
+                       -qtune=qp -qfloat=rsqrt:hssngl:fltint
+
+# Profile 
+F90FLAGS_profile    = $(F90FLAGS_production) -g -pg -qfullpath 
+
+
+# Debug
+# Don't compile with -O2, it triggers some inexistent fp exceptions in cathode
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -g -qfullpath -qsmallstack -qinit=f90ptr \
+                      -qflttrap=invalid:underflow:nanq:zerodivide:enable -qsigtrap \
+                      -qsuppress=1518-061:1518-051 \
+                      -qinitauto=FF
+
+
+##########################################################################################
+# C flags
+
+CFLAGS_debug = -O0 -g -qfullpath
+
+CFLAGS_production = -O$(PRODUCTION_OPT_LEVEL) -qmaxmem=-1 -qprefetch -qarch=qp -qtune=qp
+
+CFLAGS_profile = $(CFLAGS_production) -g -pg -qfullpath     
+
+##########################################################################################
+# Linker flags
+
+# None required
+#LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+# MPI support is provided through wrapper compilers (mpixfl*)
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+H5_FCOMPILEFLAGS=-I$(HDF5_INC)
+H5_FLINKFLAGS=-L$(HDF5_LIB) -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran \
+              -lhdf5 -L$(ZLIB_LIB) -L$(SZIP_LIB) -lsz -lz -lm \
+              -Wl,-rpath -Wl,$(HDF5_LIB)
+
+# Uncomment the following if HDF5 supports parallel MPIIO
+# H5_HAVE_PARALLEL = 1

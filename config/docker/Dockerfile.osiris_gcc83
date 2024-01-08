@@ -1,0 +1,70 @@
+# Get GCC
+FROM gcc:8.3
+
+# Update the underlying Linux distubtion inside the container
+RUN apt-get update -y
+
+# Make the final directories where all our compiled libraries will reside
+RUN mkdir /osiris_libs
+RUN mkdir /osiris_libs/hdf5
+RUN mkdir /osiris_libs/mpi
+RUN mkdir /osiris_libs/fftw
+
+#
+# Configure + Build FFTW
+#
+# Note: We build FFTW twice. The first build is for Double precision floating point.
+#                            The second build is for Single precision floating point.
+#
+WORKDIR /root
+RUN wget http://www.fftw.org/fftw-3.3.7.tar.gz
+RUN tar xzvf fftw-3.3.7.tar.gz
+WORKDIR /root/fftw-3.3.7
+RUN ./configure --prefix=/osiris_libs/fftw && make && make install
+RUN make clean
+RUN ./configure --enable-float --prefix=/osiris_libs/fftw && make && make install
+
+#
+# Configure + Build OpenMPI
+#
+WORKDIR /root
+RUN wget https://www.open-mpi.org/software/ompi/v2.1/downloads/openmpi-2.1.1.tar.gz
+RUN tar xvzf openmpi-2.1.1.tar.gz
+WORKDIR /root/openmpi-2.1.1
+RUN ./configure --enable-mpi-fortran=all --enable-static --prefix=/osiris_libs/mpi
+RUN make
+RUN make install
+RUN ldconfig
+
+#
+# Setup path for MPI
+#   (needed so that we can use 'mpicc', 'mpif90' so that HDF5 can be compiled with MPI support)
+#
+ENV H5_ROOT=/osiris_libs/hdf5
+ENV OPENMPI_ROOT=/osiris_libs/mpi
+ENV PATH="/osiris_libs/mpi/bin:${PATH}"
+
+#
+# Configure + Build HDF5 (with MPI support)
+#
+WORKDIR /root
+RUN wget https://support.hdfgroup.org/ftp/HDF5/current/src/hdf5-1.10.5.tar
+RUN tar xvf hdf5-1.10.5.tar
+WORKDIR /root/hdf5-1.10.5
+RUN ./configure --enable-fortran --enable-parallel --enable-shared --prefix=/osiris_libs/hdf5 CC=mpicc FC=mpif90 F90=mpif90
+RUN make
+RUN make install
+
+#
+# Final setup and cleanup
+#
+WORKDIR /root
+RUN ln -s /usr/local/bin/gcc /usr/local/bin/gcc-4.8
+ENV LD_LIBRARY_PATH=/osiris_libs/hdf5/lib
+run chmod -R 757 /osiris_libs
+ENV PATH="/osiris_libs/mpi/bin:${PATH}"
+ENV TERM xterm-256color
+
+# Remove build files.. when the image is built with the --squash option,
+#  removing these files can reduce the image size by 40 percent.
+RUN rm -rf hdf5* && rm -rf openmpi* && rm -rf fftw*

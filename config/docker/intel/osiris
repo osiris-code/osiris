@@ -1,0 +1,14 @@
+#
+# Place this script anywhere on you path for easy acceess!
+#
+
+#!/bin/sh
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  os_opts=''
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  os_opts='-v/Users:/Users:delegated'
+else
+  os_opts=''
+fi
+
+docker run -it -v$(pwd):/osiris:delegated $os_opts --user $(id -u):$(id -g) -w="/osiris" atableman/osirispic-intel $1 $2 $3 $4 $5 $6 $7 $8 $9

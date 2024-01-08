@@ -1,0 +1,431 @@
+#!/bin/sh
+# Multiplatform onfiguration script for osiris
+#
+################################################################################
+# POSSIBLE ARGUMENTS
+#
+# [-s sytem]      selects side specific system file
+#                 default: as previous
+#
+# [-d dimension]  Sets p_x_dim to selected value
+#                 default: 2
+#
+# [-t type]       Selects compilation type out of <production, profile, debug>
+#                 default production
+#
+# [-x filepath]   Sets a filepath to a makefile that is called after the system
+#                 makefile. This is used to overide any configuration values set
+#                 in the system makefile (e.g. AVX options)
+#
+# [-z]            If attempting to build Osiris in a non-standard (out-of-source)
+#                 directory, then -z must be passed in to confirm the intent
+#                 to do an out-source-build. '-z' is here to prevent to try to prevent
+#                 users from building in unexcepted directories.
+################################################################################
+
+show_help() {
+
+cat << _EOF
+
+Usage:
+% ./configure [-h] [-s system] [-d dimension] [-t type] [-x override-file]
+  
+Valid systems:
+_EOF
+echo $valid_systems
+
+cat << _EOF
+
+Advanced:
+  '-x override-file' is an advanced feature that most users will not need. For
+  more info about '-x' and other advanced configuration features, (including
+  out-of-source builds) see https://github.com/GoLP-IST/osiris/pull/48
+  
+_EOF
+
+}
+
+test_if_in_osiris_root_dir(){
+  #if [ -e 'Makefile' ] && [ -e 'configure' ]; then 
+  if [ "$currdir" = "$base_path" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# $1 = current directory
+# $2 = relative path to destination directory
+# returns result in variable: reverse_relative_path
+get_reverse_relative_path() {
+
+  _current_dir="$1"
+  cur_rel_path="$2"
+  
+  reverse_relative_path=""
+
+  new_bit="$(dirname "$cur_rel_path")"
+
+  while [ "$cur_rel_path" != '.' ]; do
+    new_bit=$(dirname "$cur_rel_path")
+    
+    if [ "${new_bit}" = '..' ] && [ "$cur_rel_path" == '..' ]; then
+      # This is the 'corner' case of the relative path being '..' with no slashes.
+      new_dir_name="$(basename "$PWD")"
+      cd ..
+      reverse_relative_path="${reverse_relative_path}${new_dir_name}/"
+    elif [ "${new_bit}"=='..' ]; then
+      new_dir_name=$(basename "$PWD")
+      cd ..
+      reverse_relative_path="${reverse_relative_path}${new_dir_name}/"
+    else
+      cd "${new_bit}"
+      reverse_relative_path="${new_bit}/${reverse_relative_path}"
+    fi
+      
+    cur_rel_path="$(dirname "$cur_rel_path")"
+  done
+  cd $_current_dir
+}
+
+
+# config
+########
+
+# $0 doesn' always expand the path so we need to work around it
+currdir=$PWD
+cd `dirname $0`
+base_path=$PWD
+cd $currdir
+
+config_path="config"
+osiris_conf="$base_path/$config_path/osiris_config"
+bin_dir="bin"
+
+valid_dimensions="1 2 3"
+valid_types="production profile debug"
+
+# get valid systems
+old_dir=$PWD
+cd $base_path/$config_path
+valid_systems=`ls osiris_sys.*|sed 's/osiris_sys.//g'`
+cd $old_dir
+
+# The following function sets variable 'reverse_relative_path' to 
+#   relative path FROM the base osiris to the current directory.
+#get_reverse_relative_path "$currdir" "$relative_path"
+
+# Find out if we are building in the osiris root directory
+#   If not:
+#     This is an out-of-source build
+#     get get the realtive paths linking the 'osiris root' and the 'build' (i.e current) directories.
+#   If so:
+#     No action needed. We are building in the usual osiris directory structure.
+###############
+if test_if_in_osiris_root_dir; then
+  # init variables for the case of NORMAL Osiris build from the distribution's root directory.
+  #   (e.g. './configure ...args...')
+  relative_path=""
+  out_of_source_base_path=""
+  osiris_base_path=""
+  out_of_source_build=""
+  overide_file=""
+else
+  # init variables for an out-of-source build
+
+  # Get the relative path FROM the current directory to the osiris base directory
+  #   is just the path prefix used in running the 'configure' command.
+  #   (i.e. if the use issued '../../configure' then the relative path is '../..')
+  relative_path="$(dirname "$0")"
+  out_of_source_base_path="$currdir"
+  out_of_source_build="yes"
+  osiris_base_path="$base_path"
+  osiris_conf="$out_of_source_base_path/osiris_config"
+  overide_file=""
+fi
+
+# read switches
+###############
+
+while getopts ":hs:d:t:lx:" opt; do
+ case $opt in
+    h)
+      show_help
+      exit 0
+      ;;
+    s) 
+      system=$OPTARG
+      ok=`echo $valid_systems | grep -c -w $system`
+      if [ "$ok" = "0" ] && [ ! -e "$system" ] 
+      then
+        echo "System configuration: '$system' not found"
+        echo "Valid systems: "
+        echo $valid_systems
+        exit 2
+      fi   
+      ;;
+    d) 
+      dimension=$OPTARG
+      ok=`echo $valid_dimensions | grep -c -w $dimension`
+      if [ "$ok" = "0" ] 
+      then
+        echo "Invalid dimension: $dimension"
+        echo "Valid dimensions are: "$valid_dimensions
+        exit 2
+      fi   
+      ;;
+    t)
+      type=$OPTARG
+      ok=`echo $valid_types | grep -c -w $type`
+      if [ "$ok" = "0" ] 
+      then
+        echo "Invalid type: $type"
+        echo "Valid types are: "$valid_types
+        exit 2
+      fi   
+      ;;
+    x)
+      overide_file=$OPTARG
+      if [ -z "$overide_file" ]; then
+        unset overide_file
+        remove_override_file="true"
+      else      
+        if [ ! -e "$overide_file" ]; then
+          echo "The makefile variable override file '${overide_file} (specifed by -o) can not be found."
+          exit 2
+        else
+          overide_file="$overide_file"
+        fi
+      fi
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+################ configure various filepaths ###############
+
+# system
+if [ -z "$system" ]
+then
+  if [ -e $osiris_conf ]
+  then
+    system=`awk '/SYSTEM/ {print $3}' ${osiris_conf}`
+  else
+    echo "No system defined, aborting."
+    exit 3
+  fi
+fi
+
+# dimension
+if [ -z "$dimension" ]
+then
+  if [ -e $osiris_conf ]
+  then
+    dimension=`awk '/OS_DIM/{a=$3} END{print a}' ${osiris_conf}`
+  else
+    echo "(*warning*) No dimension specified, defaulting to 2."
+    dimension=2
+  fi
+fi
+
+if [ -z "$type" ]
+then
+  if [ -e $osiris_conf ]
+  then
+    type=`awk '/COMPILATION_TYPE/{a=$3} END{print a}' ${osiris_conf}`
+  else
+    echo "(*warning*) No compilation type specified, defaulting to production."
+    type=production
+  fi
+fi
+
+if [ -z "$overide_file" ] && [ -z "$remove_override_file" ]; then
+  if [ -e $osiris_conf ]; then
+    #overide_file=`awk  '/-include/{close("file"i);i++}i==2{print $2;exit}' ${osiris_conf}`
+    overide_file=`awk '/#OVERRIDE_FILE_PATH/ {print $3}' ${osiris_conf}`
+  else
+    unset overide_file
+  fi
+fi
+
+osiris_system_template="../${config_path}/osiris_sys.${system}"
+if [ -e "$system" ]; then
+  osiris_system_template="$system"
+fi
+
+### create osiris_conf
+echo ""
+
+echo "OSIRIS Configuration:"
+echo "--------------------"
+echo "           System : '$system'"
+echo " Compilation Type : '$type'"
+echo "       Dimensions : '$dimension'"
+if [ -n "$overide_file" ]; then
+echo "     Override File: '$overide_file'"
+fi
+if [ -n "$out_of_source_build" ]; then
+echo
+echo
+echo "Note:"
+echo "  You have run 'configure' from a directory that is not the root of the Osiris repository."
+echo "    'configure' was run from the following directory:"
+echo "      $currdir"
+echo "    Which will create an executable in the directory:"
+echo "      $currdir/bin"
+echo "    Built from the Osiris source code repository:"
+echo "      $osiris_base_path"
+echo
+fi
+
+echo
+
+cat << _EOF > ${osiris_conf}
+######################################################
+# File generated by configure script. Do NOT modify! #
+######################################################
+
+# dimension of code
+###################
+OS_DIM = ${dimension}
+
+# compilation type
+##################
+COMPILATION_TYPE = ${type}
+
+# system
+########
+SYSTEM = ${system}
+
+# include system specific config
+###############################
+-include ${osiris_system_template}
+
+_EOF
+
+
+# Add more entires to 'osiris_config' if we are doing an out-of-source build.
+############################################################################
+if [ -n "$out_of_source_build" ]; then
+  # we copy (rathen then link) 'Makefile.in' from /config
+  cp $osiris_base_path/$config_path/Makefile.in $out_of_source_base_path/Makefile
+
+  # Now we modify this new Makefile.. chaning various paths to update buliding in this new location.
+  # We will use SED to do search-and-replace. That requires that our various new paths be super shell esacped.
+  osiris_conf_escaped=$(echo "$osiris_conf" | sed "s|\/|\\\/|g")
+  relative_path_escaped=$(echo "$relative_path" | sed "s|\/|\\\/|g")
+
+
+  # Change Makefile entriries  pointing to 'source' directory:
+  #     'cd source'---> 'cd RELATIVE_PATH_TO_OSIRIS_BASE/source' (relative to current directory)
+  sed -i -e "s/source/$relative_path_escaped\/source/g" Makefile
+  # Change Makefile entriries pointing to the 'configuration' script:
+  #     './configuration'---> 'RELATIVE_PATH_TO_OSIRIS_BASE/configuration' (relative to current directory)
+  sed -i -e "s/.\/configure/$relative_path_escaped\/configure/g" Makefile
+  # Change Makefile entriries pointing to the 'config' directory:
+  #     './config'---> './' (Since we put 'osiris_config' in the current directory.. which is same directory as the pur new Makefile)
+  sed -i -e "s/.\/config\//.\//g" Makefile
+  # And finally, change MAKE invocations so that they passed the 'OSIRIS_BUILD_CONFIGURATION_FILE' environment variable.
+  #     '$(MAKE)' ---> 'OSIRIS_BUILD_CONFIGURATION_FILE=/NEW_PATH/osiris_config $(MAKE)''
+  make_with_shell_vars="OSIRIS_BUILD_CONFIGURATION_FILE=${osiris_conf_escaped}"
+  sed -i -e "s|\$(MAKE)|$make_with_shell_vars \$(MAKE)|g" Makefile
+
+cat << _EOF >> ${osiris_conf}
+# Variables that configure out-of-source builds. 
+#   (i.e. builds in non-standard alternate directories)
+#
+# With out-of-source builds, this file (i.e. the 'osiris_config' file 
+#   you are currently reading) is not in the default location.
+#   The path for this file is communicated to the Osiris Build system
+#   via the environment Variable 'OSIRIS_BUILD_CONFIGURATION_FILE'
+#   See /source/config.mk for details.
+#####################################################
+builddir=${out_of_source_base_path}/build
+bindir=${out_of_source_base_path}/bin
+
+_EOF
+
+  if [ ! -d $out_of_source_base_path/$bin_dir ]; then
+    mkdir $out_of_source_base_path/$bin_dir
+  fi
+  #if [ ! -d $out_of_source_base_path/build ]; then
+  #  mkdir $out_of_source_base_path/build
+  #fi
+
+else
+  # Create required directories and Makefile link
+  # For the 'normal' case of building osiris from the distrubtion's root directory.
+  if [ ! -d $base_path/$bin_dir ]
+  then
+    mkdir $base_path/$bin_dir
+  fi
+
+  if [ ! -e $base_path/$build_dir/Makefile ]
+  then
+    ln -s $base_path/$config_path/Makefile.in ./Makefile
+  fi
+
+fi
+
+# Add more entires to 'osiris_config' from the optional 'override file'
+#  This gives a way to easily override any build parameters in the system template
+#  to easily customize the build (used, for example, in to easily configure
+#  and compile multiple versions with different features for testing)
+############################################################################
+if [ -n "$overide_file" ]; then
+  # get the absolute path for the override file.
+  cd `dirname "$overide_file"`
+  overide_abs_dir_path=$PWD
+  cd $currdir
+
+cat << _EOF >> ${osiris_conf}
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#                            OVERRIDES
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# Override any makefile build variables/parameters.
+#   These overrides come from an optional 'override file' passed to the 'configuration'
+#   script via the '-x' flag. These are intended to add/remove various build parameters defined
+#   in the system build templates in /config directory. 
+# For example, we build Osiris using use 'osiris_sys.linux.gnu' system build template. But we want to
+#   compile a version with SIMD=AVX and another build with SSE disabled. 'Override files' allow this to
+#   done easily. Say 'osiris_config.overrides' is a file that contains the line "SIMD = AVX" 
+#   for one build and "SIMD = " for another
+#
+#   Examples:
+#     ./configure -d 2 -s linux.gnu -x my_overides
+#         ( If the file 'my_overides' has one line 'PRECISION = SINGLE', then the above
+#         will force Osiris to be built with single precision. )
+#     ./configure -d 2 -s linux.gnu -x ""
+#         (The above will disable any disable using any overides)
+#   See ./config/'osiris_config.overrides.example' for details.
+\$(info )
+\$(info ##############################################################################")
+\$(info -- Note:)
+\$(info     )
+\$(info --   One or more build configuration settings were altered/overridden. )
+\$(info --   These overrides were passed to ./configuration via the -x flag. )
+\$(info --   They can be viewed by scrolling to the bottom of the file: )
+\$(info --   ${osiris_conf} )
+\$(info )
+
+# The Override File used is:
+#OVERRIDE_FILE_PATH = ${overide_file}
+#OVERRIDE_ABS_DIR_PATH = ${overide_abs_dir_path}
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!! Below are the Contents added from the Override File !!!!!!!!!!!!!!!!!!!!!!!!!
+_EOF
+cat "${overide_file}" >> ${osiris_conf}
+
+echo "\$(info ############################################################################## )"  >> ${osiris_conf}
+echo "\$(info )"  >> ${osiris_conf}
+fi

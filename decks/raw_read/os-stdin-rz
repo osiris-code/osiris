@@ -1,0 +1,192 @@
+simulation
+{
+}
+
+!----------the node configuration for this simulation---------
+node_conf
+{
+  node_number(1:2) =4, 4,
+  if_periodic(1:2) = .false., .false.,
+}
+
+!----------spatial grid----------
+grid
+{
+  nx_p(1:2) = 1280, 640,
+  coordinates = "cylindrical",
+}
+
+!----------time step and global data dump timestep number----------
+time_step
+{
+  dt= 0.00390625,
+  ndump  =  128,
+}
+
+!----------restart information----------
+restart
+{
+  ndump_fac = 25,
+  if_remold = .true.,
+}
+
+!----------spatial limits of the simulations----------
+!(note that this includes information about
+! the motion of the simulation box)
+space
+{
+  xmin(1:2) = -14, 0,
+  xmax(1:2) =   6,  10.0,
+  if_move = .true., .false.,
+}
+
+
+!----------time limits ----------
+time
+{
+  tmin = 0.0,
+  tmax = 500,
+}
+
+el_mag_fld
+{
+  solver = "custom",
+}
+
+!----------boundary conditions for em-fields ----------
+emf_bound
+{
+  type(1:2,2) =  "axial", "open",
+}
+
+emf_solver
+{
+  type = "xu",
+  solver_ord = 2,
+  n_coef = 16,
+  !dtdx1 = 0.25,
+  weight_n = 10,
+  weight_w = 0.3,
+
+  filter_limit = 0.65,
+  filter_width = 0.1,
+  n_damp_cell = 15,
+  filter_current = .true.,
+
+  ! ----------------------------------------------------
+  ! current corrector, should be turned on for most cases
+  ! ----------------------------------------------------
+  correct_current = .true.,
+}
+
+!----------diagnostic for electromagnetic fields----------
+diag_emf
+{
+  ndump_fac = 1,
+  ndump_fac_lineout = 1,
+  reports = "e1","e2","b3",
+
+}
+!----------number of particle species----------
+particles
+{
+  num_species = 2,
+  interpolation = "quadratic",
+}
+
+!----------configuration of the bunch----------
+species
+{
+  name = "driver",
+  num_par_max = 160000,
+  rqm=-1.0,
+  num_par_x(1:2) = 2, 2,
+  free_stream = .true.,
+}
+
+udist
+{
+  use_classical_uadd = .true.,
+  ufl(1:3) = 20000 , 0.0 , 0.0,
+  n_accelerate = 2048,
+}
+
+profile
+{
+  density = 100,
+  profile_type(1:2) = "gaussian", "gaussian",
+  gauss_center(1:2) = 0, 0.0,
+  gauss_sigma(1:2) = 1, 0.244949,
+  gauss_range(1:2,1) = -3.99,3.99,
+  gauss_range(1:2,2) = -0.979796, 0.979796,
+}
+
+spe_bound
+{
+  type(1:2,1) = "open", "open",
+  type(1:2,2) = "axial", "open",
+}
+
+diag_species
+{
+  prec = 8,
+  ndump_fac = 1,
+  reports = "charge",
+  ndump_fac_raw=1,
+  raw_fraction=1,
+}
+
+!----------configuration of the plasma electrons----------
+species
+{
+  name = "electrons",
+  num_par_max = 800000,
+  rqm = -1.0,
+  num_par_x(1:2) = 2, 2,
+  add_tag = .true.,
+}
+
+udist
+{
+  ufl(1:3) = 0.0 , 0.0 , 0.0,
+}
+
+profile
+{
+  density = 1,
+  den_min = 1.d-10,
+  profile_type(1:2) = "piecewise-linear", "uniform",
+  num_x = 7,
+   x(1:7,1) = 0.0, 15.0, 80.0, 3000.0, 3100.0, 3605, 3610,
+  fx(1:7,1) = 0.0,  0.0,  1.0,    1.0,    1.0,  1.0,  1.0,
+}
+
+spe_bound
+{
+  type(1:2,1) = "open","open",
+  type(1:2,2) = "axial","open",
+}
+
+diag_species
+{
+  ndump_fac = 1,
+  reports = "charge",
+  ndump_fac_lineout = 1,
+  ndump_fac_raw = 1,
+  raw_fraction = 1,
+}
+
+current{}
+
+smooth
+{
+  type(1:2) = "none", "none",
+}
+
+diag_current
+{
+  ndump_fac = 1,
+  reports = "j1",
+}
+! --------------------- end of osiris input file ---------------
+

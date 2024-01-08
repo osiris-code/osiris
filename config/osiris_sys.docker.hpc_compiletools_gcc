@@ -1,0 +1,100 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System:    docker (ahelm/hpc_compiletools_gcc)
+#   Compilers: GNU family ( gcc, gfortran )
+#
+#   Note:
+#   -----
+#   This configuration script is designed for building OSIRIS inside a docker container. 
+#   It has been tested with the docker containers `ahelm/hpc_compiletools_gcc`. These 
+#   containers include different versions of the GCC compiler and some necessary libraries
+#   for compiling OSIRIS. Moreover, they are designed to be used inside a CI system. If 
+#   some of your builds fail, you can run the following commands below to reproduce the 
+#   error during the CI step. In the root directory of the repo, run the following commands:
+#
+#   ```bash
+#
+#   	# needed to remove previous linked Makefile
+#   	rm Makefile
+#
+#   	# '9' is the GCC version and the configure option can be picked by you freely or should represent a failing build
+#   	docker run -it -v $(pwd):/project ahelm/hpc_compiletools_gcc:9 ./configure -s docker.hpc_compiletools_gcc -d 3 -t production
+#
+#   	# Build OSIRIS
+#   	docker run -it -v $(pwd):/project ahelm/hpc_compiletools_gcc:9 make
+#
+#   ```
+##########################################################################################
+# OSIRIS configuration
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+#TIMER = __MACH_TIMER__
+
+# SIMD
+# Uncomment the following line to use SIMD optimized code. You can use SIMD = SSE or
+# SIMD = AVX. When using AVX you must add -mavx to the compiler options
+#SIMD = SSE
+#SIMD = AVX
+
+# PRECISION
+#PRECISION = SINGLE
+PRECISION = DOUBLE
+
+##########################################################################################
+# Compilers
+F90 = gfortran
+F03 = $(F90) -std=gnu
+
+cc  = gcc -Wa,-q
+
+# Fortran preprocessor
+FPP = gcc -C -nostdinc -E -x assembler-with-cpp
+
+# This flag supresses some hyper-vigilant compilier warnings that have been deemed harmless. The list of warnings
+# can be found is ./source/config.mk.warnings. If you are having some strange issues that you need to debug
+# comment out DISABLE_PARANOIA and/or read the ./source/config.warnings file to allow the warnings if you think
+# they may help you find the issue.
+DISABLE_PARANOIA = YES
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (not needed for gfortran)
+# F03_EXTENSION_FLAG =
+
+# ------------------------------- Compilation Targets ------------------------------------
+F90FLAGS_all = -pipe -ffree-line-length-none -fno-range-check
+
+# OpenMP Support
+F90FLAGS_all += -fopenmp
+FPP += -D_OPENMP
+
+F90FLAGS_production = $(F90FLAGS_all) -Ofast
+F90FLAGS_debug      = $(F90FLAGS_all) -g -Og -fbacktrace -fbounds-check -ffpe-trap=invalid,zero,overflow
+F90FLAGS_profile    = -g $(F90FLAGS_production)
+
+##########################################################################################
+# C flags
+CFLAGS_production = -Ofast -march=native -std=c99
+CFLAGS_debug      = -Og -g -Wall -pedantic -march=native -std=c99
+CFLAGS_profile    = -g $(CFLAGS_production)
+
+##########################################################################################
+# Linker flags
+# None required
+#LDFLAGS =
+##########################################################################################
+# Libraries
+MPI_FCOMPILEFLAGS = -I$(MPI_INCLUDE) -pthread -I$(MPI_LIB)
+MPI_CCOMPILEFLAGS = -I$(MPI_INCLUDE) -pthread
+MPI_FLINKFLAGS    = -pthread -I$(MPI_LIB) -Wl,-rpath -Wl,$(MPI_LIB) \
+										-Wl,--enable-new-dtags -L$(MPI_LIB) -lmpi_usempif08 \
+										-lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi
+
+H5_FCOMPILEFLAGS = -I$(SZIP_INCLUDE) -I$(HDF5_INCLUDE) -I$(HDF5_LIB)
+H5_FLINKFLAGS    = -Wl,-rpath -Wl,${HDF5_LIB} -L${HDF5_LIB} \
+									 -lhdf5hl_fortran -lhdf5_fortran -lhdf5_hl_fortran \
+									 -Wl,-rpath -Wl,${SZIP_LIB} -L${SZIP_LIB} -lsz

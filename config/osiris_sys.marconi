@@ -1,0 +1,113 @@
+##########################################################################################
+# System specific configuration for OSIRIS
+#   System: Marconi (CINECA.it) - Lenovo NeXtScale
+#
+# Before compile you must load the following modules
+#    module load intel
+#    module load intelmpi
+#    module load hdf5
+#    module load zlib
+#    module load szip
+#    module load papi (optional, PAPI profiling only)
+#
+# You will also need to set the LC_ALL environment variable
+#    export LC_ALL="C"   
+################################################################################
+
+##########################################################################################
+# OSIRIS configuration
+
+# Set the following to a system optimized timer, or leave commented to use a default one
+# The BlueGene timers are used automatically
+
+# SIMD
+# Uncomment the following line to use SIMD optimized code 
+SIMD = AVX
+
+# Precision
+PRECISION = SINGLE
+# PRECISION = DOUBLE
+
+# VERSION
+# Uncomment to override the default version text
+VERSION = marconi
+
+##########################################################################################
+# Compilers
+
+F90 = mpiifort
+F03 = mpiifort -stand f03 -free
+
+cc = icc
+CC = icc
+
+# Fortran preprocessor
+FPP = gcc -C -E -x assembler-with-cpp -nostdinc
+
+##########################################################################################
+# Fortran flags
+
+# External name mangling
+UNDERSCORE = FORTRANSINGLEUNDERSCORE
+
+# Flag to enable compilation of .f03 files (so far only intel compiler requires this)
+F03_EXTENSION_FLAG = -free -Tf
+
+# Enable OpenMP code
+FPP += -D_OPENMP
+F90FLAGS_all += -qopenmp
+
+
+# ------------------------------- Compilation Targets ------------------------------------
+
+# Debug
+
+F90FLAGS_debug      = $(F90FLAGS_all) -O0 -debug all -traceback -check all,noarg_temp_created \
+                       -warn all -fpe-all=0 -ftrapuv 
+
+# Production
+# We cannot use fast because static compilation fails
+#F90FLAGS_production = $(F90FLAGS_all) -fast
+
+# This turns on all flags set by -fast except static linking
+F90FLAGS_production = $(F90FLAGS_all) -ipo -O3 -no-prec-div -fp-model fast=2 -xHost
+
+# Profile
+F90FLAGS_profile    = $(F90FLAGS_all) -O3 -xHost -debug all 
+
+#########################################################################################
+# C flags
+
+#debug
+CFLAGS_debug = -O0 -g -debug all -traceback -fp-trap-all=common -Wall -w3 -wd,981,1418,2259\
+               -pedantic -std=c99 
+
+# profile
+CFLAGS_profile = -O3 -xHost -std=c99 -debug all 
+
+# production
+CFLAGS_production = -fast
+
+##########################################################################################
+# Linker flags
+
+# None required
+#LDFLAGS =
+
+##########################################################################################
+# Libraries
+
+# MPI
+# MPI support is provided through wrapper compilers (mpifort)
+
+# MPI supports MPI_IN_PLACE reduction
+FPP += -D__HAS_MPI_IN_PLACE__
+
+# HDF5
+H5_FCOMPILEFLAGS=-I$(HDF5_INC)
+H5_FLINKFLAGS=-L$(HDF5_LIB) -lhdf5hl_fortran -lhdf5_hl -lhdf5_fortran \
+              -lhdf5 -L$(ZLIB_LIB) -L$(SZIP_LIB) -lsz -lz -lm \
+              -Wl,-rpath -Wl,$(HDF5_LIB)
+
+# Uncomment the following if HDF5 supports parallel MPIIO
+# H5_HAVE_PARALLEL = 1

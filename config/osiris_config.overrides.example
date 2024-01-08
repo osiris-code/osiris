@@ -1,0 +1,28 @@
+# - This is a sample Override File for use on building Osiris.
+# - This file is in Makefile syntax.
+# - This contents of this file are copied into 'osiris_config' by the './configuration' script
+#     and execute AFTER any osiris_sys.* scripts are run.
+# - The $(info ..) tags below are optional and just report to the user what we are doing.
+# - This script, for example, will force the build to be single percision and use AVX
+#     overriding any PRECISION or SIMD setting in the osiris_sys.* file we are using.
+# - To use this file in the build process, run ./configure with the path to this file
+#     For Example:
+#        ./configure -d 2 -s linux.gnu -x ./config/osiris_config.overides
+# - To stop using an Override File, pass -x an empty string.
+#     For Example:
+#        ./configure -d 2 -s linux.gnu -x ""
+# - Since you pass a path to the -x flag, an Override File can be located anywhere and doesn't
+#     (and most times shouldn't) be in the ./config directory.
+#        ./configure -d 2 -s linux.gnu -x ~/my_osiris_config/single_avx.override
+# - Most times your Override files are just for you to help you easily build differnt configurations.
+#     So they ususally won't be put into Osiris's primary Git repository.
+# - Many (maybe most) Osiris users will never need tis feature. You don't need it if you don't often build different
+#     test xsdfasdf FUC CK more hi there configurations. They are (and were, in fact, developed for) heavily used by
+#     the automated build server.
+#
+
+$(info "   forcing: PRECISION=SINGLE")
+PRECISION=SINGLE
+
+$(info "   forcing: SIMD=AVX")
+PRECISION=AVX

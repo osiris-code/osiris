@@ -1,0 +1,187 @@
+simulation
+{
+  ! n0 = 1.74d21,
+  ! lambda = 800nm
+  ! 1/w0 = 0.424fs
+  ! c/w0 = 127.2nm
+}
+
+!----------the node configuration for this simulation---------
+node_conf
+{
+  node_number(1:3) = 1,4,4,
+  if_periodic(1:2) = .false., .false.,
+}
+
+!----------spatial grid----------
+grid
+{
+  nx_p(1:3) = 128,160,160,
+  coordinates = "cartesian",
+}
+
+!----------time step and global data dump timestep number----------
+time_step
+{
+  dt = 0.03125,
+  ndump = 320,
+}
+
+!----------restart information----------
+restart
+{
+  ndump_fac = 2,
+  if_remold = .true.,
+}
+
+!----------spatial limits of the simulations----------
+!(note that this includes information about
+! the motion of the simulation box)
+space
+{
+  xmin(1:3) = -14, -10.0, -10.0,
+  xmax(1:3) =   2,  10.0,  10.0,
+  if_move = .true., .false., .false.,
+}
+
+
+!----------time limits ----------
+time
+{
+  tmin = 0.0,
+  tmax = 275.0,
+}
+
+el_mag_fld
+{
+  solver = "custom",
+}
+
+!----------boundary conditions for em-fields ----------
+emf_bound
+{
+  type(1:2,2) =  "open", "open",
+  type(1:2,3) =  "open", "open",
+}
+
+emf_solver
+{
+  type = "customized-coef",
+  n_coef = 16,
+  coef_e(1:16) =
+     1.248130933469396,
+    -0.125139446419605,
+     0.040951412341664,
+    -0.018181000724779,
+     0.009121734802653,
+    -0.004812019139855,
+     0.002570175265005,
+    -0.001356670416082,
+     0.000694723529383,
+    -0.000339356036052,
+     0.000155316438379,
+    -0.000065152281459,
+     0.000024294488165,
+    -0.000007666519708,
+     0.000001867004186,
+    -0.000000273002422,
+
+  coef_b(1:16) =
+     1.248130933469396,
+    -0.125139446419605,
+     0.040951412341664,
+    -0.018181000724779,
+     0.009121734802653,
+    -0.004812019139855,
+     0.002570175265005,
+    -0.001356670416082,
+     0.000694723529383,
+    -0.000339356036052,
+     0.000155316438379,
+    -0.000065152281459,
+     0.000024294488165,
+    -0.000007666519708,
+     0.000001867004186,
+    -0.000000273002422,
+}
+
+!----------diagnostic for electromagnetic fields----------
+diag_emf
+{
+  ndump_fac = 1,
+  ndump_fac_lineout = 1,
+  reports = "e1,slice,x3,80","e2,slice,x3,80","e3,slice,x3,80","b3,slice,x3,80",
+}
+
+!----------number of particle species----------
+particles
+{
+  num_species = 1,
+  interpolation =  "quadratic",
+}
+
+!----------configuration of the bunch----------
+species
+{
+  name = "driver",
+  num_par_max = 8000000,
+  rqm=-1.0,
+  num_par_x(1:3) = 1, 2, 2,
+  init_type= "beamfocus",
+}
+
+udist
+{
+  n_accelerate = 128,
+}
+
+profile
+{
+  ! 1st set of parameters define the distance to focal plane and beam transformation
+  ! for each plane (x2,x3).  Beam energy (gamma) and divergence (uth) in each plane (x2,x3)
+  ! are required. In each plane, focusing occurs when the focal plane is in front of the beam
+  ! (focal_dist > 0) and defocusing occurs when the focus is behind the beam (focal_dist < 0).
+  gamma = 20000,
+  focal_dist(1:3)= 0,100, 200,
+  uth(1:3) = 0,210,210,
+
+  ! 2nd set of parameters describe the beam parameters at the focal plane
+  den_min = 1.d-4,
+  density = 150, !
+  gauss_center(1:3) = -2.1, 0.0, 0.0,
+  gauss_sigma(1:3) = 0.7, 0.2,0.2,
+  gauss_range(1:2,1) = -5.9,1.7,
+  gauss_range(1:2,2) = -1, 1,
+  gauss_range(1:2,3) = -1, 1,
+}
+
+spe_bound
+{
+  type(1:2,1) = "open", "open",
+  type(1:2,2) = "open", "open",
+  type(1:2,3) = "open", "open",
+}
+
+diag_species
+{
+  ndump_fac = 1,
+  ndump_fac_lineout = 1,
+  reports = "charge,slice,x3,80",
+  ndump_fac_raw=1,
+  raw_fraction=0.2,
+}
+
+current{}
+
+smooth
+{
+  type(1:3) = "5pass", "none","none",
+}
+
+diag_current
+{
+  ndump_fac = 1,
+  reports = "j1,slice,x3,80",
+}
+! --------------------- end of osiris input file ---------------
+
