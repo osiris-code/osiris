@@ -1013,7 +1013,7 @@ end subroutine
 ! - This will generally just be the same as p_x_dim
 ! - Some simulation modes may override this
 !-----------------------------------------------------------------------------------------
-function get_n_x_dims_spec( this )
+pure function get_n_x_dims_spec( this )
 
   implicit none
 
