@@ -73,7 +73,7 @@ boundary and to (0.001,0.001,0.001) on the upper boundary.
     type(1:2,1) =    "open",    "open",
     type(1:2,2) = "thermal", "thermal",
     uth_bnd(1:3,1,2) = 0.1,0.1,0.1,
-    ufl_bnd(1:3,2,2) = 0.001,0.001,0.001,
+    uth_bnd(1:3,2,2) = 0.001,0.001,0.001,
   }
 ```
 
