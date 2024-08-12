@@ -14,7 +14,7 @@ is generally required in the input file. If parameters are not specified, the
 code will default to a uniform density profile with density = 1.0. One
 of these sections should exist for every species we intend to use.
 
-There are various types of profiles allowed, which are specified in the [species](Species.md) portion of the input deck. The currently available types are *"standard"/"profile"*, *"constq"*, *"beamfocus"* and *"file"*, each of which are described below.
+There are various types of profiles allowed, which are specified in the [species](Species.md) portion of the input deck. The currently available types are [*"standard"/"profile"*](#standard-profile), [*"constq"*](#constant-charge), [*"beamfocus"*](#beam-focus) and [*"file"*](#initialization-from-a-raw-particle-file), each of which are described below.
 
 ## Standard profile
 
