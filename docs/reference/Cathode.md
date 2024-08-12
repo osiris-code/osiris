@@ -168,7 +168,8 @@ spe_bound
 !----------diagnostic for this species----------
 diag_species
 {
-  ndump_fac_charge = 10,
+  ndump_fac = 10,
+  reports = "charge",
   ndump_fac_pha = 10,
   ndump_fac_raw = 10,
   ps_xmin(1:2) = 0.0, 0.0, ps_pmin(1:3) = -0.01, -0.01, -0.01,
